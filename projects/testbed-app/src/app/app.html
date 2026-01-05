@@ -1,0 +1,55 @@
+<div class="app" [attr.data-theme]="theme">
+  <lib-sidebar
+    [items]="items"
+    [theme]="theme"
+    [collapsed]="collapsed"
+    [mobileOpen]="mobileOpen"
+    [title]="title"
+    [subtitle]="subtitle"
+    [logoUrl]="logoUrl"
+    [allowMultipleOpen]="allowMultipleOpen"
+    [activeRoute]="activeRoute"
+    (collapsedChange)="collapsed = $event"
+    (mobileOpenChange)="mobileOpen = $event"
+  ></lib-sidebar>
+
+  <main class="content">
+    <header class="content__header">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Reusable sidebar library preview</p>
+      </div>
+      <div class="content__actions">
+        <button type="button" (click)="toggleTheme()">
+          Theme: {{ theme === 'dark' ? 'Dark' : 'Light' }}
+        </button>
+        <button type="button" (click)="toggleCollapsed()">
+          {{ collapsed ? 'Expand' : 'Collapse' }}
+        </button>
+        <button type="button" (click)="toggleMobile()">Mobile</button>
+      </div>
+    </header>
+
+    <section class="content__panel">
+      <div class="panel">
+        <h2>Welcome back</h2>
+        <p>
+          This testbed app consumes the <code>sidebar-menu</code> library with standalone
+          components and typed menu configuration.
+        </p>
+      </div>
+      <div class="panel">
+        <h2>Quick actions</h2>
+        <div class="chips">
+          <span>Invite team</span>
+          <span>View reports</span>
+          <span>Sync data</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <router-outlet/>
+    </section>
+  </main>
+</div>

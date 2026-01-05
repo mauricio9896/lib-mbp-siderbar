@@ -1,0 +1,113 @@
+<aside class="sidebar">
+  <div class="sidebar__header">
+    <div class="brand">
+      @if (logoUrl) {
+        <img [src]="logoUrl" [alt]="title" />
+      }
+      @if (!collapsed) {
+        <div class="brand__text">
+          <span class="brand__title">{{ title }}</span>
+          <span class="brand__subtitle">{{ subtitle }}</span>
+        </div>
+      }
+    </div>
+    <button class="icon-button" type="button" (click)="toggleCollapse()" aria-label="Toggle sidebar">
+      <span aria-hidden="true">{{ collapsed ? '→' : '←' }}</span>
+    </button>
+  </div>
+
+  <nav class="sidebar__nav">
+    <ul class="menu">
+      <ng-container
+        *ngTemplateOutlet="menuTemplate; context: { $implicit: items, level: 0 }"
+      ></ng-container>
+    </ul>
+  </nav>
+
+  @if (!collapsed) {
+    <div class="sidebar__footer">
+      <button class="ghost-button" type="button" (click)="toggleMobile()">Toggle mobile</button>
+    </div>
+  }
+</aside>
+
+@if (mobileOpen) {
+  <div class="backdrop" (click)="closeMobile()"></div>
+}
+
+<ng-template #menuTemplate let-menuItems let-level="level">
+  @for (item of menuItems; track item.id) {
+    <li
+      class="menu__item"
+      [class.is-active]="isItemActive(item)"
+      [class.is-disabled]="item.disabled"
+    >
+      <div class="item-row">
+        @if (item.route) {
+          <a
+            class="item-link"
+            [routerLink]="item.route"
+            routerLinkActive="router-active"
+            [attr.aria-disabled]="item.disabled ? 'true' : null"
+            [attr.title]="collapsed ? item.label : null"
+            (click)="onSelect(item, $event)"
+          >
+            @if (item.icon) {
+              <span class="item-icon">
+                <i [class]="item.icon" aria-hidden="true"></i>
+              </span>
+            } @else {
+              <span class="item-icon">
+                <span class="item-icon__fallback" aria-hidden="true"></span>
+              </span>
+            }
+            @if (!collapsed) {
+              <span class="item-label">{{ item.label }}</span>
+            }
+            @if (item.badge && !collapsed) {
+              <span class="item-badge">{{ item.badge }}</span>
+            }
+          </a>
+        } @else {
+          <a
+            class="item-link"
+            [attr.href]="item.url || null"
+            [attr.aria-disabled]="item.disabled ? 'true' : null"
+            [attr.title]="collapsed ? item.label : null"
+            (click)="onSelect(item, $event)"
+          >
+            @if (item.icon) {
+              <span class="item-icon">
+                <i [class]="item.icon" aria-hidden="true"></i>
+              </span>
+            }
+            @if (!collapsed) {
+              <span class="item-label">{{ item.label }}</span>
+            }
+            @if (item.badge && !collapsed) {
+              <span class="item-badge">{{ item.badge }}</span>
+            }
+          </a>
+        }
+        @if (item.children?.length && !collapsed) {
+          <button
+            class="item-toggle"
+            type="button"
+            (click)="toggleItem(item, $event)"
+            [attr.aria-expanded]="isExpanded(item)"
+          >
+            <span aria-hidden="true">▾</span>
+          </button>
+        }
+      </div>
+
+      @if (item.children?.length) {
+        <ul class="submenu">
+          <ng-container
+            *ngTemplateOutlet="menuTemplate; context: { $implicit: item.children, level: level + 1 }"
+          ></ng-container>
+        </ul>
+      }
+    </li>
+  }
+</ng-template>

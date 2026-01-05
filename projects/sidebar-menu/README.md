@@ -1,63 +1,112 @@
-# SidebarMenu
+# Sidebar Menu Library
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.0.
+Reusable Angular sidebar component with dark/light theme, collapsible layout, and nested items. Built as a library with standalone components and SCSS styling.
 
-## Code scaffolding
+## Install and Build
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the library, run:
+Build the library:
 
 ```bash
 ng build sidebar-menu
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+Use from another project by linking the built package or publishing from `dist/sidebar-menu`.
 
-### Publishing the Library
+## Basic Usage (Standalone)
 
-Once the project is built, you can publish your library by following these steps:
+```ts
+import { Component } from '@angular/core';
+import { SidebarComponent, SIDEBAR_EXAMPLE_ITEMS, SidebarItem, SidebarTheme } from 'sidebar-menu';
 
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/sidebar-menu
-   ```
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [SidebarComponent],
+  template: `
+    <lib-sidebar
+      [items]="items"
+      [theme]="theme"
+      [collapsed]="collapsed"
+      (collapsedChange)="collapsed = $event"
+    ></lib-sidebar>
+  `,
+})
+export class AppComponent {
+  items: SidebarItem[] = SIDEBAR_EXAMPLE_ITEMS;
+  theme: SidebarTheme = 'dark';
+  collapsed = false;
+}
+```
 
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
+## Menu Config
 
-## Running unit tests
+```ts
+import { SidebarItem } from 'sidebar-menu';
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+const items: SidebarItem[] = [
+  { id: 'dashboard', label: 'Dashboard', route: '/dashboard', icon: 'ri-dashboard-line' },
+  {
+    id: 'analytics',
+    label: 'Analytics',
+    icon: 'ri-line-chart-line',
+    children: [
+      { id: 'overview', label: 'Overview', route: '/analytics/overview' },
+      { id: 'reports', label: 'Reports', route: '/analytics/reports', badge: '4' },
+    ],
+  },
+  { id: 'support', label: 'Support', url: 'https://example.com', icon: 'ri-question-line' },
+];
+```
+
+## Inputs and Outputs
+
+### Inputs
+- `items: SidebarItem[]`
+- `collapsed: boolean`
+- `mobileOpen: boolean`
+- `theme: 'light' | 'dark'`
+- `title: string`
+- `subtitle: string`
+- `logoUrl?: string`
+- `activeItemId?: string`
+- `activeRoute?: string`
+- `allowMultipleOpen: boolean`
+
+### Outputs
+- `collapsedChange: EventEmitter<boolean>`
+- `mobileOpenChange: EventEmitter<boolean>`
+- `itemSelected: EventEmitter<SidebarItem>`
+
+## Theme
+
+The component uses CSS variables and `data-sidebar-theme` on the host.
+
+```html
+<lib-sidebar [theme]="'light'"></lib-sidebar>
+```
+
+Optional service:
+
+```ts
+import { ThemeService } from 'sidebar-menu';
+
+constructor(private themeService: ThemeService) {}
+
+setDark(): void {
+  this.themeService.setTheme('dark');
+}
+```
+
+## Icons
+
+Use `icon` with your own icon font or CSS classes.
+
+```ts
+{ id: 'team', label: 'Team', route: '/team', icon: 'ri-team-line' }
+```
+
+## Testing
 
 ```bash
 ng test
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
