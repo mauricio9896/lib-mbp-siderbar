@@ -29,7 +29,6 @@
   <!-- FOOTER -->
   <div class="sidebar__footer">
     <div class="footer-actions">
-        <!-- Collapse Button -->
         <button
           class="sidebar-toggle-btn"
           type="button"
@@ -39,12 +38,6 @@
         >
         <mat-icon>{{ collapsed ? 'menu_open' : 'chevron_left' }}</mat-icon>
       </button>
-       <!-- Mobile Only Close Button (optional if not covered by backdrop) -->
-      @if(mobileOpen) {
-          <button class="sidebar-toggle-btn mobile-close" (click)="closeMobile()">
-            <mat-icon>close</mat-icon>
-          </button>
-      }
     </div>
   </div>
 </aside>

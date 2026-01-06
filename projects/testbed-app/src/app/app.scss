@@ -10,12 +10,14 @@
   grid-template-columns: auto 1fr;
   min-height: 100vh;
   padding: 20px;
+  background-color: red;
 }
 
 .content {
   padding: 32px 40px;
   background: linear-gradient(135deg, #f1f3f6 0%, #ffffff 100%);
   color: #1b1d28;
+  background: green !important;
 }
 
 .content__header {
@@ -50,30 +52,6 @@
   font-weight: 600;
 }
 
-.panel {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 20px 40px rgba(10, 12, 20, 0.08);
-}
-
-.panel h2 {
-  margin-top: 0;
-}
-
-.chips {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.chips span {
-  background: rgba(54, 65, 82, 0.08);
-  color: #364152;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-}
 
 @media (max-width: 900px) {
   .app {

@@ -1,6 +1,5 @@
-// --- Variables (Theme Configuration) ---
 :host {
-  // Light Theme Defaults (using new --sidebar-* naming convention)
+  // Light Theme Defaults
   --sidebar-bg: #ffffff;
   --sidebar-text: #4b5563;
   --sidebar-muted: #6b7280;
@@ -15,15 +14,17 @@
   --sidebar-width: 280px;
   --sidebar-radius: 12px;
   --sidebar-radius-item: 0px;
-  --sidebar-align: center; // Nueva variable para alineación vertical (flex-start, center, flex-end)
+  --sidebar-align: center; // (flex-start, center, flex-end)
 
   --sidebar-width-collapsed: 80px;
+  --sidebar-less-height: 40px;
+
+  // Variables fijas
   --sidebar-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   --sidebar-shadow: 4px 0 24px rgba(0,0,0,0.02);
-
   display: block;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  height: calc(100vh - 40px);
+  height: calc(100vh - var(--sidebar-less-height));
 }
 
 // --- Dark Theme (User Provided) ---
@@ -31,8 +32,8 @@
   --sidebar-bg: #101218;
   --sidebar-text: #f5f6f8;
   --sidebar-muted: #a8acb8;
-  --sidebar-border: rgba(255, 255, 255, 0.08); /* Important for separators */
-  --sidebar-active-text: #ffffff;             /* Text color when active */
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-active-text: #ffffff;
   --sidebar-accent: #4b6cff;
   --sidebar-active-bg: rgba(75, 108, 255, 0.16);
   --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
@@ -68,7 +69,7 @@
 
     // Centrar iconos cuando está colapsado
     .menu-link-wrapper {
-      padding: 0; // Reset padding
+      padding: 0;
       justify-content: center;
 
       .menu-link {
@@ -328,7 +329,7 @@
   .sidebar-toggle-btn {
       background: transparent;
       border: 1px solid var(--sidebar-border);
-      width: 32px;
+      width: 46px;
       height: 32px;
       border-radius: 8px;
       display: flex;
@@ -380,7 +381,7 @@
 }
 
 // --- Mobile Responsive Styles ---
-@media (max-width: 991px) {
+@media (max-width: 900px) {
   // Critical: Remove component from document flow to prevent layout shifting
   :host {
     position: absolute;
