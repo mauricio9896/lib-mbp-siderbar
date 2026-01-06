@@ -10,14 +10,14 @@
   grid-template-columns: auto 1fr;
   min-height: 100vh;
   padding: 20px;
-  background-color: red;
+  background: #ffffff;
 }
 
 .content {
   padding: 32px 40px;
   background: linear-gradient(135deg, #f1f3f6 0%, #ffffff 100%);
   color: #1b1d28;
-  background: green !important;
+  background: transparent;
 }
 
 .content__header {
