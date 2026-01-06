@@ -16,12 +16,12 @@ export const SIDEBAR_EXAMPLE_ITEMS: SidebarItem[] = [
     id: 'dashboard',
     label: 'Dashboard',
     route: '/dashboard',
-    icon: 'ri-dashboard-line',
+    icon: 'dashboard',
   },
   {
     id: 'analytics',
     label: 'Analytics',
-    icon: 'ri-line-chart-line',
+    icon: 'analytics',
     children: [
       {
         id: 'analytics-overview',
@@ -40,12 +40,12 @@ export const SIDEBAR_EXAMPLE_ITEMS: SidebarItem[] = [
     id: 'team',
     label: 'Team',
     route: '/team',
-    icon: 'ri-team-line',
+    icon: 'people',
   },
   {
     id: 'settings',
     label: 'Settings',
     route: '/settings',
-    icon: 'ri-settings-3-line',
+    icon: 'settings',
   },
 ];

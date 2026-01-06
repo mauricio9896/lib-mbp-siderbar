@@ -2,17 +2,24 @@
   <div class="sidebar__header">
     <div class="brand">
       @if (logoUrl) {
-        <img [src]="logoUrl" [alt]="title" />
-      }
-      @if (!collapsed) {
-        <div class="brand__text">
-          <span class="brand__title">{{ title }}</span>
-          <span class="brand__subtitle">{{ subtitle }}</span>
-        </div>
+      <img [src]="logoUrl" [alt]="title" />
+      } @if (!collapsed) {
+      <div class="brand__text">
+        <span class="brand__title">{{ title }}</span>
+        <span class="brand__subtitle">{{ subtitle }}</span>
+      </div>
       }
     </div>
-    <button class="icon-button" type="button" (click)="toggleCollapse()" aria-label="Toggle sidebar">
-      <span aria-hidden="true">{{ collapsed ? '→' : '←' }}</span>
+
+    <button
+      class="icon-button"
+      type="button"
+      (click)="toggleCollapse()"
+      aria-label="Toggle sidebar"
+    >
+      <mat-icon aria-hidden="true">
+        {{ collapsed ? 'chevron_right' : 'chevron_left' }}
+      </mat-icon>
     </button>
   </div>
 
@@ -25,89 +32,71 @@
   </nav>
 
   @if (!collapsed) {
-    <div class="sidebar__footer">
-      <button class="ghost-button" type="button" (click)="toggleMobile()">Toggle mobile</button>
-    </div>
+  <div class="sidebar__footer">
+    <button class="ghost-button" type="button" (click)="toggleMobile()">Toggle mobile</button>
+  </div>
   }
 </aside>
 
 @if (mobileOpen) {
-  <div class="backdrop" (click)="closeMobile()"></div>
+<div class="backdrop" (click)="closeMobile()"></div>
 }
 
 <ng-template #menuTemplate let-menuItems let-level="level">
-  @for (item of menuItems; track item.id) {
-    <li
-      class="menu__item"
-      [class.is-active]="isItemActive(item)"
-      [class.is-disabled]="item.disabled"
-    >
-      <div class="item-row">
-        @if (item.route) {
-          <a
-            class="item-link"
-            [routerLink]="item.route"
-            routerLinkActive="router-active"
-            [attr.aria-disabled]="item.disabled ? 'true' : null"
-            [attr.title]="collapsed ? item.label : null"
-            (click)="onSelect(item, $event)"
-          >
-            @if (item.icon) {
-              <span class="item-icon">
-                <i [class]="item.icon" aria-hidden="true"></i>
-              </span>
-            } @else {
-              <span class="item-icon">
-                <span class="item-icon__fallback" aria-hidden="true"></span>
-              </span>
-            }
-            @if (!collapsed) {
-              <span class="item-label">{{ item.label }}</span>
-            }
-            @if (item.badge && !collapsed) {
-              <span class="item-badge">{{ item.badge }}</span>
-            }
-          </a>
-        } @else {
-          <a
-            class="item-link"
-            [attr.href]="item.url || null"
-            [attr.aria-disabled]="item.disabled ? 'true' : null"
-            [attr.title]="collapsed ? item.label : null"
-            (click)="onSelect(item, $event)"
-          >
-            @if (item.icon) {
-              <span class="item-icon">
-                <i [class]="item.icon" aria-hidden="true"></i>
-              </span>
-            }
-            @if (!collapsed) {
-              <span class="item-label">{{ item.label }}</span>
-            }
-            @if (item.badge && !collapsed) {
-              <span class="item-badge">{{ item.badge }}</span>
-            }
-          </a>
-        }
-        @if (item.children?.length && !collapsed) {
-          <button
-            class="item-toggle"
-            type="button"
-            (click)="toggleItem(item, $event)"
-            [attr.aria-expanded]="isExpanded(item)"
-          >
-            <span aria-hidden="true">▾</span>
-          </button>
-        }
-      </div>
+  @for (item of menuItems; track trackById($index, item)) {
+  <li
+    class="menu__item"
+    [class.is-active]="isItemActive(item)"
+    [class.is-disabled]="item.disabled"
+    [attr.data-level]="level"
+  >
+    <div class="item-row">
+      <!-- Link -->
+      <a
+        class="item-link"
+        [routerLink]="item.route || null"
+        routerLinkActive="router-active"
+        [attr.href]="!item.route ? item.url || null : null"
+        [attr.aria-disabled]="item.disabled ? 'true' : null"
+        [attr.title]="collapsed ? item.label : null"
+        (click)="onSelect(item, $event)"
+      >
+        <span class="item-icon">
+          <mat-icon aria-hidden="true">
+            {{ item.icon || 'radio_button_unchecked' }}
+          </mat-icon>
+        </span>
 
-      @if (item.children?.length) {
-        <ul class="submenu">
-          <ng-container
-            *ngTemplateOutlet="menuTemplate; context: { $implicit: item.children, level: level + 1 }"
-          ></ng-container>
-        </ul>
+        @if (!collapsed) {
+        <span class="item-label">{{ item.label }}</span>
+        } @if (item.badge && !collapsed) {
+        <span class="item-badge">{{ item.badge }}</span>
+        }
+      </a>
+
+      <!-- Toggle (solo si tiene hijos y NO está colapsado) -->
+      @if (item.children?.length && !collapsed) {
+      <button
+        class="item-toggle"
+        type="button"
+        (click)="toggleItem(item, $event)"
+        [disabled]="isExpanded(item) && isItemActive(item)"
+        [attr.aria-expanded]="isExpanded(item)"
+      >
+        <mat-icon aria-hidden="true" [class.is-rotated]="isExpanded(item)"> expand_more </mat-icon>
+      </button>
+
       }
-    </li>
+    </div>
+
+    <!-- ✅ Submenu SOLO cuando está expandido (y NO colapsado) -->
+    @if (item.children?.length && isExpanded(item) && !collapsed) {
+    <ul class="submenu">
+      <ng-container
+        *ngTemplateOutlet="menuTemplate; context: { $implicit: item.children, level: level + 1 }"
+      ></ng-container>
+    </ul>
+    }
+  </li>
   }
 </ng-template>
