@@ -2,7 +2,6 @@
 :host {
   // Light Theme Defaults (using new --sidebar-* naming convention)
   --sidebar-bg: #ffffff;
-  --sidebar-panel: #ffffff;
   --sidebar-text: #4b5563;
   --sidebar-muted: #6b7280;
   --sidebar-active-text: #2563eb;
@@ -14,20 +13,22 @@
 
   // Layout Variables
   --sidebar-width: 280px;
+  --sidebar-radius: 12px;
+  --sidebar-radius-item: 0px;
+  --sidebar-align: center; // Nueva variable para alineación vertical (flex-start, center, flex-end)
+
   --sidebar-width-collapsed: 80px;
   --sidebar-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --sidebar-radius: 12px;
   --sidebar-shadow: 4px 0 24px rgba(0,0,0,0.02);
 
   display: block;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  height: 100vh;
+  height: calc(100vh - 40px);
 }
 
 // --- Dark Theme (User Provided) ---
 :host([data-sidebar-theme='dark']) {
   --sidebar-bg: #101218;
-  --sidebar-panel: #1a1d26;
   --sidebar-text: #f5f6f8;
   --sidebar-muted: #a8acb8;
   --sidebar-border: rgba(255, 255, 255, 0.08); /* Important for separators */
@@ -53,6 +54,7 @@
   position: relative;
   z-index: 100;
   box-shadow: var(--sidebar-shadow);
+  border-radius: var(--sidebar-radius);
 
   &.collapsed {
     width: var(--sidebar-width-collapsed);
@@ -89,6 +91,7 @@
   align-items: center;
   padding: 0 24px;
   flex-shrink: 0;
+  border-bottom: 1px solid var(--sidebar-border);
 
   .brand {
     display: flex;
@@ -138,10 +141,16 @@
   overflow-x: hidden;
   padding: 16px;
 
+  // Flex layout para permitir alineación vertical
+  display: flex;
+  flex-direction: column;
+  justify-content: var(--sidebar-align);
+
   .menu-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    width: 100%; // Asegurar que ocupe el ancho en flex column
   }
 }
 
@@ -160,7 +169,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  border-radius: var(--sidebar-radius);
+  border-radius: var(--sidebar-radius-item);
   transition: background-color 0.2s ease, color 0.2s ease;
   cursor: pointer;
   color: var(--sidebar-text);
@@ -444,14 +453,14 @@
     font-family: var(--sidebar-font-family) !important;
     font-size: 13px !important; // Slightly larger for readability
     padding: 8px 12px !important;
-    border-radius: 8px !important;
+    border-radius: var(--sidebar-radius-item) !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
 
   // --- Menu Popup Styles ---
   .sidebar-popup-menu {
     background-color: var(--sidebar-bg) !important;
-    border-radius: 12px !important; // Matches var(--sidebar-radius) hardcoded
+    border-radius: var(--sidebar-radius-item) !important;
     border: 1px solid var(--sidebar-border);
     padding: 8px 0;
     max-width: 300px; // Evitar menús gigantes

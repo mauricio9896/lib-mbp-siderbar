@@ -9,6 +9,7 @@
   display: grid;
   grid-template-columns: auto 1fr;
   min-height: 100vh;
+  padding: 20px;
 }
 
 .content {
@@ -47,12 +48,6 @@
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
-}
-
-.content__panel {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
 }
 
 .panel {

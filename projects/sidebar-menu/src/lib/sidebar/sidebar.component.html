@@ -142,7 +142,7 @@
         }
         <span>{{ child.label }}</span>
       </button>
-      <mat-menu #grandChildMenu="matMenu" [class]="'sidebar-popup-menu ' + overlayThemeClass">
+      <mat-menu #grandChildMenu="matMenu" [class]="'sidebar-popup-menu ' + overlayThemeClass" xPosition = "after" >
         <ng-container *ngTemplateOutlet="matMenuRecursive; context: { $implicit: child.children }"></ng-container>
       </mat-menu>
     } @else {
