@@ -61,13 +61,13 @@
         [attr.title]="collapsed ? item.label : null"
         (click)="onSelect(item, $event)"
       >
+        @if (item?.icon) {
         <span class="item-icon">
           <mat-icon aria-hidden="true">
-            {{ item.icon || 'radio_button_unchecked' }}
+            {{ item.icon }}
           </mat-icon>
         </span>
-
-        @if (!collapsed) {
+        } @if (!collapsed) {
         <span class="item-label">{{ item.label }}</span>
         } @if (item.badge && !collapsed) {
         <span class="item-badge">{{ item.badge }}</span>
