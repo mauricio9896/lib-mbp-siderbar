@@ -72,7 +72,6 @@ export const SIDEBAR_EXAMPLE_ITEMS: SidebarItem[] = [
   {
     id: 'team',
     label: 'Team',
-    route: '/team',
     icon: 'people',
     children: [
       {
