@@ -74,6 +74,19 @@ export const SIDEBAR_EXAMPLE_ITEMS: SidebarItem[] = [
     label: 'Team',
     route: '/team',
     icon: 'people',
+    children: [
+      {
+        id: 'team-overview',
+        label: 'Overview',
+        route: '/team/overview',
+      },
+      {
+        id: 'team-reports',
+        label: 'Reports',
+        route: '/team/reports',
+        badge: '4',
+      },
+    ],
   },
   {
     id: 'settings',
