@@ -7,9 +7,12 @@ import {
   HostBinding,
   Input,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
-  inject
+  inject,
+  ElementRef,
+  Renderer2
 } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,7 +20,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { SidebarItem, SidebarTheme } from './sidebar.types';
+import { SidebarItem, SidebarTheme, SidebarThemeConfig, SidebarThemeColors, SidebarLayout } from './sidebar.types';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
@@ -43,9 +46,11 @@ import { Subject } from 'rxjs';
     ])
   ]
 })
-export class SidebarComponent implements OnChanges {
+export class SidebarComponent implements OnChanges, OnInit {
   private _cdr = inject(ChangeDetectorRef);
   private _router = inject(Router);
+  private _elementRef = inject(ElementRef);
+  private _renderer = inject(Renderer2);
   private _destroy$ = new Subject<void>();
 
   @Input() items: SidebarItem[] = [];
@@ -54,6 +59,13 @@ export class SidebarComponent implements OnChanges {
   @Input() mobileOpen = false;
 
   @Input() theme: SidebarTheme = 'light';
+
+  /**
+   * Configuración de colores y layout personalizados.
+   * Si no se proporciona, usa los valores por defecto.
+   */
+  @Input() themeConfig?: SidebarThemeConfig;
+
   @Input() title = 'Workspace';
   @Input() subtitle = 'Overview';
   @Input() logoUrl?: string;
@@ -89,6 +101,35 @@ export class SidebarComponent implements OnChanges {
 
   private expandedIds = new Set<string>();
 
+  // Temas por defecto
+  private defaultLightTheme: SidebarThemeColors = {
+    bg: '#ffffff',
+    text: '#4b5563',
+    textSecondary: '#6b7280',
+    activeBg: '#eff6ff',
+    activeText: '#2563eb',
+    hoverBg: '#f3f4f6',
+    border: '#e5e7eb'
+  };
+
+  private defaultDarkTheme: SidebarThemeColors = {
+    bg: '#101218',
+    text: '#f5f6f8',
+    textSecondary: '#a8acb8',
+    activeBg: 'rgba(75, 108, 255, 0.16)',
+    activeText: '#ffffff',
+    hoverBg: 'rgba(255, 255, 255, 0.05)',
+    border: 'rgba(255, 255, 255, 0.08)'
+  };
+
+  private defaultLayout: SidebarLayout = {
+    width: '280px',
+    radius: '12px',
+    radiusItem: '0px',
+    align: 'center',
+    lessHeight: '40px'
+  };
+
   constructor() {
     this._router.events.pipe(
       filter(event => event instanceof NavigationEnd),
@@ -100,6 +141,10 @@ export class SidebarComponent implements OnChanges {
       // Opcional: Expandir automáticamente al navegar
       this.syncExpandedWithActive();
     });
+  }
+
+  ngOnInit(): void {
+    this.applyThemeVariables();
   }
 
   ngOnDestroy(): void {
@@ -116,6 +161,11 @@ export class SidebarComponent implements OnChanges {
     // Si se colapsa el sidebar, por UX normalmente ocultamos submenús
     if (changes['collapsed'] && this.collapsed) {
       this.expandedIds.clear();
+    }
+
+    // Aplicar variables cuando cambia el tema o themeConfig
+    if (changes['theme'] || changes['themeConfig']) {
+      this.applyThemeVariables();
     }
   }
 
@@ -136,6 +186,51 @@ export class SidebarComponent implements OnChanges {
     if (!this.mobileOpen) return;
     this.mobileOpen = false;
     this.mobileOpenChange.emit(false);
+  }
+
+  /**
+   * Aplica las variables CSS customizadas según el tema actual.
+   * Si no hay themeConfig, usa los valores por defecto.
+   */
+  private applyThemeVariables(): void {
+    const host = this._elementRef.nativeElement;
+
+    // Merge con temas por defecto
+    const lightTheme = { ...this.defaultLightTheme, ...this.themeConfig?.light };
+    const darkTheme = { ...this.defaultDarkTheme, ...this.themeConfig?.dark };
+    const layout = { ...this.defaultLayout, ...this.themeConfig?.layout };
+
+    // Determinar qué tema aplicar según this.theme
+    const currentTheme = this.theme === 'dark' ? darkTheme : lightTheme;
+
+    // Aplicar variables del tema actual
+    this.setCSSVar(host, '--sidebar-bg', currentTheme.bg);
+    this.setCSSVar(host, '--sidebar-text', currentTheme.text);
+    this.setCSSVar(host, '--sidebar-text-secondary', currentTheme.textSecondary);
+    this.setCSSVar(host, '--sidebar-active-bg', currentTheme.activeBg);
+    this.setCSSVar(host, '--sidebar-active-text', currentTheme.activeText);
+    this.setCSSVar(host, '--sidebar-hover-bg', currentTheme.hoverBg);
+    this.setCSSVar(host, '--sidebar-border', currentTheme.border);
+
+    // Aplicar variables de layout
+    this.setCSSVar(host, '--sidebar-width', layout.width);
+    this.setCSSVar(host, '--sidebar-radius', layout.radius);
+    this.setCSSVar(host, '--sidebar-radius-item', layout.radiusItem);
+    this.setCSSVar(host, '--sidebar-align', layout.align);
+    this.setCSSVar(host, '--sidebar-less-height', layout.lessHeight);
+
+    // Variables derivadas
+    this.setCSSVar(host, '--sidebar-icon', currentTheme.text);
+    this.setCSSVar(host, '--sidebar-icon-active', currentTheme.activeText);
+  }
+
+  /**
+   * Establece una variable CSS en el elemento host.
+   */
+  private setCSSVar(element: HTMLElement, property: string, value: string | undefined): void {
+    if (value) {
+      element.style.setProperty(property, value);
+    }
   }
 
   toggleMobile(): void {

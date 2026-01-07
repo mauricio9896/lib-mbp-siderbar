@@ -11,6 +11,39 @@ export interface SidebarItem {
   children?: SidebarItem[];
 }
 
+/**
+ * Colores personalizables para cada tema
+ */
+export interface SidebarThemeColors {
+  bg?: string;
+  text?: string;
+  textSecondary?: string;
+  activeBg?: string;
+  activeText?: string;
+  hoverBg?: string;
+  border?: string;
+}
+
+/**
+ * Variables de layout personalizables
+ */
+export interface SidebarLayout {
+  width?: string;
+  radius?: string;
+  radiusItem?: string;
+  align?: 'flex-start' | 'center' | 'flex-end';
+  lessHeight?: string;
+}
+
+/**
+ * Configuración completa de temas y layout
+ */
+export interface SidebarThemeConfig {
+  light?: SidebarThemeColors;
+  dark?: SidebarThemeColors;
+  layout?: SidebarLayout;
+}
+
 export const SIDEBAR_EXAMPLE_ITEMS: SidebarItem[] = [
   {
     id: 'dashboard',
