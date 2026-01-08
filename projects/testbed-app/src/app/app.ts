@@ -24,13 +24,6 @@ export class App {
   theme: SidebarTheme = 'light';
 
   themeLight: SidebarThemeColors = {
-    bg: 'red',
-    text: '#050606ff',
-    textSecondary: '#475569',
-    activeBg: '#2563EB',
-    activeText: '#FFFFFF',
-    hoverBg: '#E2E8F0',
-    border: '#CBD5E1',
   };
 
   themeConfig: SidebarThemeConfig = {
@@ -40,7 +33,7 @@ export class App {
   collapsed = false;
   mobileOpen = false;
 
-  allowMultipleOpen = true;
+  allowMultipleOpen = false;
 
   logoUrl =
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStDb66ZgPNOLPzcQl5jFngadK4-3xuI3Z1wA&s';

@@ -1,15 +1,21 @@
 <div class="app">
 
   <lib-sidebar
+
     [items]="items"
+    [title]="title"
+    [logoUrl]="logoUrl"
+
+    [mobileOpen]="mobileOpen"
+
+    [subtitle]="subtitle"
     [theme]="theme"
     [collapsed]="collapsed"
-    [mobileOpen]="mobileOpen"
-    [title]="title"
     [themeConfig]="themeConfig"
-    [subtitle]="subtitle"
-    [logoUrl]="logoUrl"
+
+
     [allowMultipleOpen]="allowMultipleOpen"
+
     (collapsedChange)="collapsed = $event"
     (mobileOpenChange)="mobileOpen = $event"
   ></lib-sidebar>

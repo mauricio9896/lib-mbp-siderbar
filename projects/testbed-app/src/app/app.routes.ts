@@ -40,7 +40,8 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'analytics/overview', component: AnalyticsOverviewComponent },
   { path: 'analytics/reports', component: AnalyticsReportsComponent },
-  { path: 'team', component: TeamComponent },
+  { path: 'team/overview', component: AnalyticsOverviewComponent },
+  { path: 'team/reports', component: AnalyticsReportsComponent },
   { path: 'settings', component: SettingsComponent },
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
 ];
