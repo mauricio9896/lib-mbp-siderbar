@@ -17,7 +17,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { SidebarItem, SidebarTheme, SidebarThemeConfig } from './sidebar.types';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -38,20 +37,6 @@ import { applyThemeVariables } from './siderbar.theme';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('slideDown', [
-      state('void', style({ height: '0px', opacity: 0, overflow: 'hidden', display: 'none' })),
-      state('*', style({ height: '*', opacity: 1, overflow: 'hidden', display: 'block' })),
-      transition('void => *', [
-        style({ height: '0px', opacity: 0, overflow: 'hidden', display: 'block' }),
-        animate('250ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ height: '*', opacity: 1 })),
-      ]),
-      transition('* => void', [
-        style({ height: '*', opacity: 1, overflow: 'hidden', display: 'block' }),
-        animate('200ms ease-out', style({ height: '0px', opacity: 0 })),
-      ]),
-    ]),
-  ],
 })
 export class SidebarComponent implements OnChanges, OnInit {
   private _cdr = inject(ChangeDetectorRef);

@@ -115,7 +115,7 @@
 
       <!-- SUBMENU (Standard) -->
       @if (item.children?.length && isExpanded(item) && !collapsed) {
-        <ul class="submenu" [@slideDown]>
+        <ul class="submenu">
           <ng-container
             *ngTemplateOutlet="menuTemplate; context: { $implicit: item.children, level: level + 1 }"
           ></ng-container>

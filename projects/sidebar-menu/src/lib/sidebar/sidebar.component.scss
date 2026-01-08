@@ -11,23 +11,26 @@
   background: var(--sidebar-bg);
   display: flex;
   flex-direction: column;
-  transition: var(--sidebar-transition);
+  transition: width 0.4s ease;
   position: relative;
   z-index: 100;
   box-shadow: var(--sidebar-shadow);
   border-radius: var(--sidebar-radius);
 
   &.collapsed {
-    width: var(--sidebar-width-collapsed);
+    width: 90px;
 
     .brand__info,
     .menu-label,
     .menu-chevron,
+    .menu-badge,
     .sidebar__footer .user-profile-mini {
       opacity: 0;
-      width: 0;
+      max-width: 0;
+      margin: 0;
+      padding: 0;
       overflow: hidden;
-      display: none;
+      pointer-events: none;
     }
 
     // Centrar iconos cuando está colapsado
@@ -35,7 +38,7 @@
       padding: 0;
       justify-content: center;
 
-      .menu-link {
+    .menu-link {
         justify-content: center;
         padding: 12px 0;
       }
@@ -81,7 +84,8 @@
     &__info {
       display: flex;
       flex-direction: column;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.3s ease, max-width 0.3s ease;
+      max-width: 240px;
       white-space: nowrap;
 
       .brand__title {
@@ -190,6 +194,7 @@
   text-decoration: none;
   color: inherit;
   font-size: 14px;
+  transition: padding 0.4s ease;
 }
 
 .menu-icon {
@@ -214,6 +219,8 @@
   height: 18px;
   transition: transform 0.3s ease;
   opacity: 0.6;
+  display: inline-flex;
+  max-width: 18px;
 
   &.rotated {
     transform: rotate(180deg);
@@ -226,11 +233,23 @@
   font-size: 11px;
   font-weight: 600;
   margin-right: 8px;
+  transition: opacity 0.3s ease, max-width 0.3s ease;
+  display: inline-flex;
+  max-width: 120px;
+  overflow: hidden;
 
   &.badge-default {
     background-color: var(--sidebar-border);
     color: var(--sidebar-text);
   }
+}
+
+.menu-label {
+  transition: opacity 0.3s ease, max-width 0.3s ease;
+  display: inline-flex;
+  max-width: 220px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 // --- Submenu ---
