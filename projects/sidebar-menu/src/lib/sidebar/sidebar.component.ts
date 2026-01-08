@@ -18,11 +18,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import {
-  SidebarItem,
-  SidebarTheme,
-  SidebarThemeConfig,
-} from './sidebar.types';
+import { SidebarItem, SidebarTheme, SidebarThemeConfig } from './sidebar.types';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { applyThemeVariables } from './siderbar.theme';
@@ -69,15 +65,10 @@ export class SidebarComponent implements OnChanges, OnInit {
   @Input() mobileOpen = false;
 
   // Opciones del siderbar para una configuracion mas perzonalida
-  @Input() subtitle = 'Overview'; // opcional
+  @Input() subtitle = 'Overview';
   @Input() theme: SidebarTheme = 'light';
   @Input() themeConfig?: SidebarThemeConfig;
   @Input() allowMultipleOpen = false;
-
-  // esta en duda
-  @Input() collapsed = false; // eliminar
-  @Input() activeItemId?: string;
-  @Input() activeRoute?: string;
 
   // salidas del siderbar
   @Output() collapsedChange = new EventEmitter<boolean>();
@@ -89,6 +80,7 @@ export class SidebarComponent implements OnChanges, OnInit {
   }
 
   //Variables
+  public collapsed = false;
   private _destroy$ = new Subject<void>();
   private expandedIds = new Set<string>();
 
@@ -115,7 +107,7 @@ export class SidebarComponent implements OnChanges, OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     // Auto-expand cuando cambien items o activeRoute
-    if (changes['items'] || changes['activeRoute']) {
+    if (changes['items']) {
       this.syncExpandedWithActive();
     }
 
@@ -155,12 +147,8 @@ export class SidebarComponent implements OnChanges, OnInit {
   }
 
   onItemClick(item: SidebarItem, event: Event): void {
-    // Si está colapsado y tiene submenú:
-    // Dejamos que el evento burbujee para activar el MatMenuTrigger que está en el padre.
-    // Solo prevenimos la navegación por defecto del enlace (href) para no saltar de página.
     if (this.collapsed && item.children?.length) {
       event.preventDefault();
-      // IMPORTANTE: No usamos stopPropagation() aquí.
       return;
     }
 
@@ -169,14 +157,13 @@ export class SidebarComponent implements OnChanges, OnInit {
       // En modo expandido, toggle del acordeón
       this.toggleItem(item, event);
     } else {
-      // Ítem hoja o enlace directo
       this.onSelect(item, event);
     }
   }
 
   toggleItem(item: SidebarItem, event?: Event): void {
     event?.preventDefault();
-    event?.stopPropagation(); // Mantiene el comportamiento de acordeón aislado
+    event?.stopPropagation();
 
     if (!item.children?.length) return;
 
@@ -196,7 +183,6 @@ export class SidebarComponent implements OnChanges, OnInit {
       this.expandedIds.add(item.id);
     }
 
-    // Forzar actualización de vista para animaciones
     this._cdr.markForCheck();
   }
 
@@ -207,8 +193,6 @@ export class SidebarComponent implements OnChanges, OnInit {
       return;
     }
 
-    // Si el item tiene hijos y no tiene route, se comporta como "grupo"
-    // (selección no navega; solo expande)
     if (item.children?.length && !item.route && !item.url) {
       event?.preventDefault();
       this.toggleItem(item, event);
@@ -224,15 +208,6 @@ export class SidebarComponent implements OnChanges, OnInit {
   }
 
   isItemActive(item: SidebarItem): boolean {
-    // 1) Activo por ID (si lo manejas desde afuera)
-    if (this.activeItemId && item.id === this.activeItemId) return true;
-
-    // 2) Activo por route explícita (si lo manejas desde afuera)
-    if (this.activeRoute) {
-      if (item.route === this.activeRoute || item.url === this.activeRoute) return true;
-    }
-
-    // 3) Activo automático por Router si tiene route
     if (item.route) {
       const urlTree = this._router.createUrlTree(
         Array.isArray(item.route) ? item.route : [item.route]
