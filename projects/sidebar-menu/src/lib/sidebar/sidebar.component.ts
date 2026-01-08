@@ -215,7 +215,7 @@ export class SidebarComponent implements OnChanges, OnInit {
     // Determinar qué tema aplicar según this.theme
     const currentTheme = this.theme === 'dark' ? darkTheme : lightTheme;
 
-    // Aplicar variables del tema actual
+    // Aplicar variables del tema actual en el host
     this.setCSSVar(host, '--sidebar-bg', currentTheme.bg);
     this.setCSSVar(host, '--sidebar-text', currentTheme.text);
     this.setCSSVar(host, '--sidebar-text-secondary', currentTheme.textSecondary);
@@ -234,6 +234,38 @@ export class SidebarComponent implements OnChanges, OnInit {
     // Variables derivadas
     this.setCSSVar(host, '--sidebar-icon', currentTheme.text);
     this.setCSSVar(host, '--sidebar-icon-active', currentTheme.activeText);
+
+    // Aplicar clase de tema en body para overlays (tooltips, menús)
+    const themeClass = `sidebar-theme-${this.theme}`;
+    document.body.classList.remove('sidebar-theme-light', 'sidebar-theme-dark');
+    document.body.classList.add(themeClass);
+
+    // Si hay customización, aplicar variables CSS personalizadas en body
+    if (this.themeConfig) {
+      // Crear elemento style o actualizar si existe
+      let styleEl = document.getElementById('sidebar-overlay-theme') as HTMLStyleElement;
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'sidebar-overlay-theme';
+        document.head.appendChild(styleEl);
+      }
+
+      // Generar CSS para overlays con valores customizados
+      styleEl.textContent = `
+        .sidebar-theme-${this.theme} .sidebar-tooltip,
+        .sidebar-theme-${this.theme} .sidebar-popup-menu {
+          --sidebar-bg: ${currentTheme.bg} !important;
+          --sidebar-text: ${currentTheme.text} !important;
+          --sidebar-text-secondary: ${currentTheme.textSecondary} !important;
+          --sidebar-active-text: ${currentTheme.activeText} !important;
+          --sidebar-active-bg: ${currentTheme.activeBg} !important;
+          --sidebar-hover-bg: ${currentTheme.hoverBg} !important;
+          --sidebar-border: ${currentTheme.border} !important;
+          --sidebar-icon: ${currentTheme.text} !important;
+          --sidebar-icon-active: ${currentTheme.activeText} !important;
+        }
+      `;
+    }
   }
 
   /**

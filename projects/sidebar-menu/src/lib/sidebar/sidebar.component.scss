@@ -429,8 +429,9 @@
 // --- Overlay Styles (Tooltip & Menu) ---
 // Note: We use ::ng-deep because these elements are attached to the body overlay
 ::ng-deep {
-  // --- Define Theme Variables for Overlay ---
-  // Since Overlay is outside :host, we must re-declare the variables or map them.
+  // --- Theme Classes para Overlays ---
+  // Las variables se heredan de document.body (aplicadas dinámicamente por TS)
+  // o usan los valores por defecto si no hay customización
   .sidebar-theme-light {
     --sidebar-bg: #ffffff;
     --sidebar-text: #4b5563;
