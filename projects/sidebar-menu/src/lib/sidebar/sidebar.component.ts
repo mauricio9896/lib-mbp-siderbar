@@ -71,7 +71,6 @@ export class SidebarComponent implements OnChanges, OnInit {
   @Input() allowMultipleOpen = false;
 
   // salidas del siderbar
-  @Output() collapsedChange = new EventEmitter<boolean>();
   @Output() mobileOpenChange = new EventEmitter<boolean>();
   @Output() itemSelected = new EventEmitter<SidebarItem>();
 
@@ -119,7 +118,6 @@ export class SidebarComponent implements OnChanges, OnInit {
 
   toggleCollapse(): void {
     this.collapsed = !this.collapsed;
-    this.collapsedChange.emit(this.collapsed);
 
     // Si colapsa, cerramos submenús por UX
     if (this.collapsed) {
