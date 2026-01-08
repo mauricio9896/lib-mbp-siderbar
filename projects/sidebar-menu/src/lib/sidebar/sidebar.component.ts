@@ -12,7 +12,6 @@ import {
   SimpleChanges,
   inject,
   ElementRef,
-  Renderer2
 } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,14 +19,28 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { SidebarItem, SidebarTheme, SidebarThemeConfig, SidebarThemeColors, SidebarLayout } from './sidebar.types';
+import {
+  SidebarItem,
+  SidebarTheme,
+  SidebarThemeConfig,
+  SidebarThemeColors,
+  SidebarLayout,
+} from './sidebar.types';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 @Component({
   selector: 'lib-sidebar',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, RouterLinkActive, MatRippleModule, MatTooltipModule, MatMenuModule],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    RouterLink,
+    RouterLinkActive,
+    MatRippleModule,
+    MatTooltipModule,
+    MatMenuModule,
+  ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,51 +50,48 @@ import { Subject } from 'rxjs';
       state('*', style({ height: '*', opacity: 1, overflow: 'hidden', display: 'block' })),
       transition('void => *', [
         style({ height: '0px', opacity: 0, overflow: 'hidden', display: 'block' }),
-        animate('250ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ height: '*', opacity: 1 }))
+        animate('250ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ height: '*', opacity: 1 })),
       ]),
       transition('* => void', [
         style({ height: '*', opacity: 1, overflow: 'hidden', display: 'block' }),
-        animate('200ms ease-out', style({ height: '0px', opacity: 0 }))
-      ])
-    ])
-  ]
+        animate('200ms ease-out', style({ height: '0px', opacity: 0 })),
+      ]),
+    ]),
+  ],
 })
 export class SidebarComponent implements OnChanges, OnInit {
+
   private _cdr = inject(ChangeDetectorRef);
-  private _router = inject(Router);
   private _elementRef = inject(ElementRef);
-  private _renderer = inject(Renderer2);
+
+  private _router = inject(Router);
   private _destroy$ = new Subject<void>();
-
-  @Input() items: SidebarItem[] = [];
-
-  @Input() collapsed = false;
-  @Input() mobileOpen = false;
-
-  @Input() theme: SidebarTheme = 'light';
-
-  /**
-   * Configuración de colores y layout personalizados.
-   * Si no se proporciona, usa los valores por defecto.
-   */
-  @Input() themeConfig?: SidebarThemeConfig;
 
   @Input() title = 'Workspace';
   @Input() subtitle = 'Overview';
+  @Input() items: SidebarItem[] = [];
   @Input() logoUrl?: string;
 
-  /**
-   * Opcional: puedes setear esto desde fuera si quieres forzar un activo
-   * (por ejemplo, si no quieres depender solo de routerLinkActive).
-   */
+
+  @Input() mobileOpen = false;
+
+
+  @Input() theme: SidebarTheme = 'light';
+  @Input() themeConfig?: SidebarThemeConfig;
+  @Input() allowMultipleOpen = false;
+
+  @Input() collapsed = false; // eliminar
+
   @Input() activeItemId?: string;
   @Input() activeRoute?: string;
 
-  @Input() allowMultipleOpen = false;
 
   @Output() collapsedChange = new EventEmitter<boolean>();
   @Output() mobileOpenChange = new EventEmitter<boolean>();
   @Output() itemSelected = new EventEmitter<SidebarItem>();
+
+
+
 
   @HostBinding('attr.data-sidebar-theme') get dataTheme(): SidebarTheme {
     return this.theme;
@@ -109,7 +119,7 @@ export class SidebarComponent implements OnChanges, OnInit {
     activeBg: '#eff6ff',
     activeText: '#2563eb',
     hoverBg: '#f3f4f6',
-    border: '#e5e7eb'
+    border: '#e5e7eb',
   };
 
   private defaultDarkTheme: SidebarThemeColors = {
@@ -119,7 +129,7 @@ export class SidebarComponent implements OnChanges, OnInit {
     activeBg: 'rgba(75, 108, 255, 0.16)',
     activeText: '#ffffff',
     hoverBg: 'rgba(255, 255, 255, 0.05)',
-    border: 'rgba(255, 255, 255, 0.08)'
+    border: 'rgba(255, 255, 255, 0.08)',
   };
 
   private defaultLayout: SidebarLayout = {
@@ -127,20 +137,22 @@ export class SidebarComponent implements OnChanges, OnInit {
     radius: '12px',
     radiusItem: '0px',
     align: 'center',
-    lessHeight: '40px'
+    lessHeight: '40px',
   };
 
   constructor() {
-    this._router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this._destroy$)
-    ).subscribe(() => {
-      // Necesario para que isItemActive se reevalúe y la vista se actualice
-      this._cdr.markForCheck();
+    this._router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this._destroy$)
+      )
+      .subscribe(() => {
+        // Necesario para que isItemActive se reevalúe y la vista se actualice
+        this._cdr.markForCheck();
 
-      // Opcional: Expandir automáticamente al navegar
-      this.syncExpandedWithActive();
-    });
+        // Opcional: Expandir automáticamente al navegar
+        this.syncExpandedWithActive();
+      });
   }
 
   ngOnInit(): void {
@@ -250,11 +262,11 @@ export class SidebarComponent implements OnChanges, OnInit {
 
     // Lógica estándar cuando no está colapsado
     if (item.children?.length) {
-        // En modo expandido, toggle del acordeón
-        this.toggleItem(item, event);
+      // En modo expandido, toggle del acordeón
+      this.toggleItem(item, event);
     } else {
-        // Ítem hoja o enlace directo
-        this.onSelect(item, event);
+      // Ítem hoja o enlace directo
+      this.onSelect(item, event);
     }
   }
 
@@ -318,12 +330,21 @@ export class SidebarComponent implements OnChanges, OnInit {
 
     // 3) Activo automático por Router si tiene route
     if (item.route) {
-        const urlTree = this._router.createUrlTree(Array.isArray(item.route) ? item.route : [item.route]);
-        // paths: 'subset' permite que /analytics esté activo si estás en /analytics/reports (si lo deseas)
-        // o 'exact' para coincidencia exacta. Usualmente para menús subset es mejor.
-        if (this._router.isActive(urlTree, { paths: 'subset', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' })) {
-            return true;
-        }
+      const urlTree = this._router.createUrlTree(
+        Array.isArray(item.route) ? item.route : [item.route]
+      );
+      // paths: 'subset' permite que /analytics esté activo si estás en /analytics/reports (si lo deseas)
+      // o 'exact' para coincidencia exacta. Usualmente para menús subset es mejor.
+      if (
+        this._router.isActive(urlTree, {
+          paths: 'subset',
+          queryParams: 'ignored',
+          fragment: 'ignored',
+          matrixParams: 'ignored',
+        })
+      ) {
+        return true;
+      }
     }
 
     // 4) Activo si alguno de sus hijos está activo
@@ -339,6 +360,7 @@ export class SidebarComponent implements OnChanges, OnInit {
   }
 
   private syncExpandedWithActive(): void {
+
     // Busca ruta activa automáticamente si no se provee desde fuera
     const path = this.findActivePath(this.items);
     if (!path.length) return;
@@ -361,17 +383,18 @@ export class SidebarComponent implements OnChanges, OnInit {
 
       let isDirectActive = false;
 
-      // Chequeo manual
-      if ((this.activeItemId && item.id === this.activeItemId) ||
-          (this.activeRoute && (item.route === this.activeRoute || item.url === this.activeRoute))) {
-          isDirectActive = true;
-      }
-      // Chequeo router automático
-      else if (item.route) {
-          const urlTree = this._router.createUrlTree(Array.isArray(item.route) ? item.route : [item.route]);
-          // Usamos 'exact' para encontrar el nodo hoja exacto,
-          // o 'subset' si queremos expandir hasta el padre más cercano
-          isDirectActive = this._router.isActive(urlTree, { paths: 'exact', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' });
+      if (item.route) {
+
+        const urlTree = this._router.createUrlTree(
+          Array.isArray(item.route) ? item.route : [item.route]
+        );
+
+        isDirectActive = this._router.isActive(urlTree, {
+          paths: 'exact',
+          queryParams: 'ignored',
+          fragment: 'ignored',
+          matrixParams: 'ignored',
+        });
       }
 
       if (isDirectActive) {

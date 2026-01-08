@@ -201,6 +201,11 @@
     .active-indicator {
       transform: scaleY(1);
     }
+
+    // No mostrar hover en items activos
+    &:hover {
+      background-color: var(--sidebar-active-bg);
+    }
   }
 }
 
@@ -297,6 +302,13 @@
 
     &:hover {
       background-color: var(--sidebar-hover-bg);
+    }
+  }
+
+  // No mostrar hover en subitems activos
+  .menu-item.active > .menu-link-wrapper {
+    &:hover {
+      background-color: var(--sidebar-active-bg);
     }
   }
 
