@@ -106,14 +106,9 @@ export class SidebarComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Auto-expand cuando cambien items o activeRoute
+    // Auto-expand cuando cambien items
     if (changes['items']) {
       this.syncExpandedWithActive();
-    }
-
-    // Si se colapsa el sidebar, por UX normalmente ocultamos submenús
-    if (changes['collapsed'] && this.collapsed) {
-      this.expandedIds.clear();
     }
 
     // Aplicar variables cuando cambia el tema o themeConfig
@@ -212,8 +207,6 @@ export class SidebarComponent implements OnChanges, OnInit {
       const urlTree = this._router.createUrlTree(
         Array.isArray(item.route) ? item.route : [item.route]
       );
-      // paths: 'subset' permite que /analytics esté activo si estás en /analytics/reports (si lo deseas)
-      // o 'exact' para coincidencia exacta. Usualmente para menús subset es mejor.
       if (
         this._router.isActive(urlTree, {
           paths: 'subset',
@@ -226,7 +219,6 @@ export class SidebarComponent implements OnChanges, OnInit {
       }
     }
 
-    // 4) Activo si alguno de sus hijos está activo
     if (item.children?.length) {
       return item.children.some((child) => this.isItemActive(child));
     }
