@@ -4,7 +4,6 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  HostBinding,
   Input,
   OnChanges,
   OnInit,
@@ -61,63 +60,45 @@ import { DEFAULT_DARK_THEME, DEFAULT_LAYOUT, DEFAULT_LIGHT_THEME } from './sider
   ],
 })
 export class SidebarComponent implements OnChanges, OnInit {
-
   private _cdr = inject(ChangeDetectorRef);
   private _elementRef = inject(ElementRef);
-
   private _router = inject(Router);
-  private _destroy$ = new Subject<void>();
 
+  // variables requeridas
   @Input() title = 'Workspace';
-  @Input() subtitle = 'Overview';
   @Input() items: SidebarItem[] = [];
   @Input() logoUrl?: string;
-
+  @Input() subtitle = 'Overview'; // opcional
 
   @Input() mobileOpen = false;
 
-
+  // Opciones del siderbar para una configuracion mas perzonalida
   @Input() theme: SidebarTheme = 'light';
   @Input() themeConfig?: SidebarThemeConfig;
   @Input() allowMultipleOpen = false;
 
+  // esta en duda
   @Input() collapsed = false; // eliminar
-
   @Input() activeItemId?: string;
   @Input() activeRoute?: string;
 
-
+  // salidas del siderbar
   @Output() collapsedChange = new EventEmitter<boolean>();
   @Output() mobileOpenChange = new EventEmitter<boolean>();
   @Output() itemSelected = new EventEmitter<SidebarItem>();
-
-
-
-
-  @HostBinding('attr.data-sidebar-theme') get dataTheme(): SidebarTheme {
-    return this.theme;
-  }
-
-  @HostBinding('class.is-collapsed') get isCollapsed(): boolean {
-    return this.collapsed;
-  }
-
-  @HostBinding('class.is-mobile-open') get isMobileOpen(): boolean {
-    return this.mobileOpen;
-  }
 
   get overlayThemeClass(): string {
     return `sidebar-theme-${this.theme}`;
   }
 
+  //Variables
+  private _destroy$ = new Subject<void>();
   private expandedIds = new Set<string>();
 
   // Temas por defecto
   private defaultLightTheme: SidebarThemeColors = DEFAULT_LIGHT_THEME;
-
   private defaultDarkTheme: SidebarThemeColors = DEFAULT_DARK_THEME;
-
-  private defaultLayout: SidebarLayout =  DEFAULT_LAYOUT;
+  private defaultLayout: SidebarLayout = DEFAULT_LAYOUT;
 
   constructor() {
     this._router.events
@@ -371,7 +352,6 @@ export class SidebarComponent implements OnChanges, OnInit {
   }
 
   private syncExpandedWithActive(): void {
-
     // Busca ruta activa automáticamente si no se provee desde fuera
     const path = this.findActivePath(this.items);
     if (!path.length) return;
@@ -395,7 +375,6 @@ export class SidebarComponent implements OnChanges, OnInit {
       let isDirectActive = false;
 
       if (item.route) {
-
         const urlTree = this._router.createUrlTree(
           Array.isArray(item.route) ? item.route : [item.route]
         );
