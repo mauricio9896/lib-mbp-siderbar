@@ -144,7 +144,7 @@
   display: flex;
   align-items: center;
   border-radius: var(--sidebar-radius-item);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
   cursor: pointer;
   color: var(--sidebar-text);
   overflow: hidden; // For ripple
@@ -206,7 +206,7 @@
 .menu-icon {
   margin-right: 12px;
   color: var(--sidebar-icon);
-  transition: color 0.2s, transform 0.4s ease, margin-right 0.4s ease;
+  transition: color 0.3s ease, transform 0.4s ease, margin-right 0.4s ease;
   font-size: 22px;
   width: 22px;
   height: 22px;
@@ -252,7 +252,7 @@
 }
 
 .menu-label {
-  transition: opacity 0.3s ease, max-width 0.3s ease;
+  transition: opacity 0.3s ease, max-width 0.3s ease, color 0.3s ease;
   display: inline-flex;
   max-width: 220px;
   overflow: hidden;
