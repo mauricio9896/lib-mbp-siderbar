@@ -28,6 +28,7 @@ import {
 } from './sidebar.types';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { DEFAULT_DARK_THEME, DEFAULT_LAYOUT, DEFAULT_LIGHT_THEME } from './siderbar.default';
 
 @Component({
   selector: 'lib-sidebar',
@@ -112,33 +113,11 @@ export class SidebarComponent implements OnChanges, OnInit {
   private expandedIds = new Set<string>();
 
   // Temas por defecto
-  private defaultLightTheme: SidebarThemeColors = {
-    bg: '#ffffff',
-    text: '#4b5563',
-    textSecondary: '#6b7280',
-    activeBg: '#eff6ff',
-    activeText: '#2563eb',
-    hoverBg: '#f3f4f6',
-    border: '#e5e7eb',
-  };
+  private defaultLightTheme: SidebarThemeColors = DEFAULT_LIGHT_THEME;
 
-  private defaultDarkTheme: SidebarThemeColors = {
-    bg: '#101218',
-    text: '#f5f6f8',
-    textSecondary: '#a8acb8',
-    activeBg: 'rgba(75, 108, 255, 0.16)',
-    activeText: '#ffffff',
-    hoverBg: 'rgba(255, 255, 255, 0.05)',
-    border: 'rgba(255, 255, 255, 0.08)',
-  };
+  private defaultDarkTheme: SidebarThemeColors = DEFAULT_DARK_THEME;
 
-  private defaultLayout: SidebarLayout = {
-    width: '280px',
-    radius: '12px',
-    radiusItem: '0px',
-    align: 'center',
-    lessHeight: '40px',
-  };
+  private defaultLayout: SidebarLayout =  DEFAULT_LAYOUT;
 
   constructor() {
     this._router.events

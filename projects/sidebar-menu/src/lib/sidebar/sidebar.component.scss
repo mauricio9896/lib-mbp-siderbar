@@ -1,47 +1,7 @@
 :host {
-  // Light Theme Defaults (Debug Colors)
-  --sidebar-bg: #ffff00; /*  Fondo Principal */
-  --sidebar-text: #ff0000; /*  Texto Normal */
-  --sidebar-text-secondary: #800080; /* Texto Secundario/Subtítulos */
-
-  --sidebar-active-bg: #0000ff; /* Fondo del Item Activo */
-  --sidebar-active-text: #ffffff; /* Texto Activo */
-
-  --sidebar-hover-bg: #00ff00; /* Fondo al pasar el mouse (Hover) */
-  --sidebar-border: #000000; /* Bordes y Separadores */
-
-  // Layout Variables
-  --sidebar-width: 280px;
-  --sidebar-radius: 12px;
-  --sidebar-radius-item: 4px;
-  --sidebar-align: center; // (flex-start, center, flex-end)
-  --sidebar-less-height: 40px;
-
-  // Variables fijas
-  --sidebar-width-collapsed: 80px;
-  --sidebar-icon-active: var(--sidebar-active-text);
-  --sidebar-icon: var(--sidebar-text);
-  --sidebar-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --sidebar-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
-
   display: block;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   height: calc(100vh - var(--sidebar-less-height));
-}
-
-// --- Dark Theme (User Provided) ---
-:host([data-sidebar-theme='dark']) {
-  --sidebar-bg: #101218;
-  --sidebar-text: #f5f6f8;
-  --sidebar-text-secondary: #a8acb8;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-active-text: #ffffff;
-  --sidebar-accent: #4b6cff;
-  --sidebar-active-bg: rgba(75, 108, 255, 0.16);
-  --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
-  --sidebar-shadow: 0 20px 40px rgba(3, 4, 8, 0.45);
-  --sidebar-icon: #a8acb8;
-  --sidebar-icon-active: #ffffff;
 }
 
 // --- Layout Principal ---
@@ -426,47 +386,13 @@
   }
 }
 
-// --- Overlay Styles (Tooltip & Menu) ---
-// Note: We use ::ng-deep because these elements are attached to the body overlay
 ::ng-deep {
-  // --- Theme Classes para Overlays ---
-  // Las variables se heredan de document.body (aplicadas dinámicamente por TS)
-  // o usan los valores por defecto si no hay customización
-  .sidebar-theme-light {
-    --sidebar-bg: #ffffff;
-    --sidebar-text: #4b5563;
-    --sidebar-text-secondary: #6b7280;
-    --sidebar-active-text: #2563eb;
-    --sidebar-active-bg: #eff6ff;
-    --sidebar-hover-bg: #f3f4f6;
-    --sidebar-border: #e5e7eb;
-    --sidebar-icon: #9ca3af;
-    --sidebar-icon-active: #2563eb;
-    --sidebar-font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  }
-
-  .sidebar-theme-dark {
-    --sidebar-bg: #101218;
-    --sidebar-text: #f5f6f8;
-    --sidebar-text-secondary: #a8acb8;
-    --sidebar-active-text: #ffffff;
-    --sidebar-active-bg: rgba(75, 108, 255, 0.16);
-    --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
-    --sidebar-border: rgba(255, 255, 255, 0.08);
-    --sidebar-icon: #a8acb8;
-    --sidebar-icon-active: #ffffff;
-    --sidebar-font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  }
-
   // --- Tooltip Styles ---
   .sidebar-tooltip {
-    // Invert Colors for Tooltip usually looks better, OR use Sidebar Dark for contrast?
-    // User requested "Same color/styles as menu". So let's match the sidebar theme.
     background-color: var(--sidebar-bg) !important;
     color: var(--sidebar-text) !important;
-    border: 1px solid var(--sidebar-border);
-    font-family: var(--sidebar-font-family) !important;
-    font-size: 13px !important; // Slightly larger for readability
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    font-size: 13px !important;
     padding: 8px 12px !important;
     border-radius: var(--sidebar-radius-item) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -476,14 +402,13 @@
   .sidebar-popup-menu {
     background-color: var(--sidebar-bg) !important;
     border-radius: var(--sidebar-radius-item) !important;
-    border: 1px solid var(--sidebar-border);
     padding: 8px 0;
     max-width: 300px; // Evitar menús gigantes
 
     // Override standard mat-menu-item styles
     .mat-mdc-menu-item {
       color: var(--sidebar-text) !important;
-      font-family: var(--sidebar-font-family, inherit) !important;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
       font-size: 14px !important;
       min-height: 44px !important; // Compact rows
       line-height: 44px !important;
