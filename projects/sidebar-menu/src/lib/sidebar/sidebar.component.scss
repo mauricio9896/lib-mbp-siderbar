@@ -18,7 +18,7 @@
   border-radius: var(--sidebar-radius);
 
   &.collapsed {
-    width: 90px;
+    width: var(--sidebar-width-collapsed, 90px);
 
     .brand__info,
     .menu-label,
@@ -27,26 +27,32 @@
     .sidebar__footer .user-profile-mini {
       opacity: 0;
       max-width: 0;
-      margin: 0;
-      padding: 0;
       overflow: hidden;
       pointer-events: none;
     }
 
-    // Centrar iconos cuando está colapsado
-    .menu-link-wrapper {
-      padding: 0;
-      justify-content: center;
-
     .menu-link {
-        justify-content: center;
-        padding: 12px 0;
-      }
+      justify-content: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
 
-      .menu-icon {
-        margin-right: 0;
-        font-size: 24px;
-      }
+    .menu-icon {
+      margin-right: 0;
+      animation: icon-hide-show 0.7s ease;
+    }
+  }
+
+  &:not(.collapsed) {
+    .menu-icon {
+      animation: icon-show 0.7s ease;
+    }
+
+    .brand__info,
+    .menu-label,
+    .menu-badge,
+    .menu-chevron {
+      animation: text-show 0.7s ease;
     }
   }
 }
@@ -200,7 +206,7 @@
 .menu-icon {
   margin-right: 12px;
   color: var(--sidebar-icon);
-  transition: color 0.2s;
+  transition: color 0.2s, transform 0.4s ease, margin-right 0.4s ease;
   font-size: 22px;
   width: 22px;
   height: 22px;
@@ -217,10 +223,11 @@
   font-size: 18px;
   width: 18px;
   height: 18px;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease, max-width 0.3s ease;
   opacity: 0.6;
   display: inline-flex;
   max-width: 18px;
+  overflow: hidden;
 
   &.rotated {
     transform: rotate(180deg);
@@ -402,6 +409,47 @@
 
   .sidebar-backdrop {
     z-index: 1000;
+  }
+}
+
+@keyframes icon-hide-show {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  60% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes icon-show {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes text-show {
+  0% {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
