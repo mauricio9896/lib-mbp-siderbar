@@ -265,8 +265,13 @@
   list-style: none;
   padding: 0;
   margin: 0; // Reset
-  margin-top: 4px;
+  margin-top: 0;
   position: relative;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: max-height 0.8s ease, opacity 0.6s ease, margin-top 0.4s ease;
 
   // Línea guía para submenús
   &::before {
@@ -312,6 +317,13 @@
     background: var(--sidebar-icon-active);
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); // Blue ring for active subitem
   }
+}
+
+.menu-item.expanded > .submenu {
+  max-height: var(--submenu-max-height, 600px);
+  opacity: 1;
+  pointer-events: auto;
+  margin-top: 4px;
 }
 
 // --- Footer ---

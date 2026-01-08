@@ -114,7 +114,7 @@
       </mat-menu>
 
       <!-- SUBMENU (Standard) -->
-      @if (item.children?.length && isExpanded(item) && !collapsed) {
+      @if (item.children?.length && !collapsed) {
         <ul class="submenu">
           <ng-container
             *ngTemplateOutlet="menuTemplate; context: { $implicit: item.children, level: level + 1 }"
