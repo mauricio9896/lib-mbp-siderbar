@@ -16,7 +16,6 @@ import {
   styleUrl: './app.scss',
 })
 export class App {
-
   title = 'Nova Labs';
   subtitle = 'Workspace';
   items: SidebarItem[] = [...SIDEBAR_EXAMPLE_ITEMS];
@@ -24,6 +23,13 @@ export class App {
   theme: SidebarTheme = 'light';
 
   themeLight: SidebarThemeColors = {
+    bg: '#F4FBF9', // Fondo claro
+    text: '#134E4A', // Texto principal
+    textSecondary: '#4D7C76', // Texto secundario
+    activeBg: '#2DD4BF', // Activo (verde moderno)
+    activeText: '#022C22', // Texto activo
+    hoverBg: '#CCFBF1', // Hover suave
+    border: '#99F6E4', // Borde sutil
   };
 
   themeConfig: SidebarThemeConfig = {
