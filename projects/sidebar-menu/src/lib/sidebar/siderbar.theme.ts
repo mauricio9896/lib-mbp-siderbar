@@ -30,7 +30,7 @@ const DEFAULT_LAYOUT: SidebarLayout = {
   radius: '12px',
   radiusItem: '4px',
   align: 'center',
-  lessHeight: '40px',
+  lessHeight: '0px',
 };
 
 /**
