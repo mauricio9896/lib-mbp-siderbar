@@ -1,4 +1,4 @@
-import { ElementRef, inject } from '@angular/core';
+import { ElementRef } from '@angular/core';
 import { SidebarLayout, SidebarTheme, SidebarThemeColors, SidebarThemeConfig } from './sidebar.types';
 
 /**
@@ -28,7 +28,7 @@ const DEFAULT_DARK_THEME: SidebarThemeColors = {
 const DEFAULT_LAYOUT: SidebarLayout = {
   width: '280px',
   radius: '12px',
-  radiusItem: '0px',
+  radiusItem: '4px',
   align: 'center',
   lessHeight: '40px',
 };
