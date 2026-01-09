@@ -7,6 +7,7 @@ import {
   SidebarTheme,
   SidebarThemeConfig,
   SidebarThemeColors,
+  SidebarLayout,
 } from 'sidebar-menu';
 
 @Component({
@@ -32,8 +33,13 @@ export class App {
     border: '#99F6E4', // Borde sutil
   };
 
+  layout: SidebarLayout = {
+    lessHeight: '20px'
+  }
+
   themeConfig: SidebarThemeConfig = {
     light: this.themeLight,
+    layout: this.layout,
   };
 
   collapsed = false;
