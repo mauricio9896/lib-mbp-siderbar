@@ -29,6 +29,7 @@
   <!-- FOOTER -->
   <div class="sidebar__footer">
     <div class="footer-actions">
+      @if (!mobileOpenState()) {
         <button
           class="sidebar-toggle-btn"
           type="button"
@@ -38,6 +39,7 @@
         >
         <mat-icon>{{ collapsed() ? 'menu_open' : 'chevron_left' }}</mat-icon>
       </button>
+      }
     </div>
   </div>
 </aside>

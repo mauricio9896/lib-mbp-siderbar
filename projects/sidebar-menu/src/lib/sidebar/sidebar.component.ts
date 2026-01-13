@@ -84,6 +84,13 @@ export class SidebarComponent {
     });
 
     effect(() => {
+      if (this.mobileOpenState()) {
+        this.collapsed.set(false);
+        this.closePopup();
+      }
+    });
+
+    effect(() => {
       applyThemeVariables(this.theme(), this._elementRef, this._document, this.themeConfig());
     });
 
@@ -94,6 +101,7 @@ export class SidebarComponent {
   }
 
   toggleCollapse(): void {
+    if (this.mobileOpenState()) return;
     const nextCollapsed = !this.collapsed();
     this.collapsed.set(nextCollapsed);
 
