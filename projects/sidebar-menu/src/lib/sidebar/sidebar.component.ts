@@ -152,7 +152,9 @@ export class SidebarComponent implements OnChanges, OnInit {
     }
 
     if (!this.allowMultipleOpen) {
+      const activeParentIds = this.getActiveParentIds();
       this.expandedIds.clear();
+      activeParentIds.forEach((id) => this.expandedIds.add(id));
     }
 
     if (isOpen) {
@@ -228,6 +230,12 @@ export class SidebarComponent implements OnChanges, OnInit {
 
     parentIds.forEach((id) => this.expandedIds.add(id));
     this._cdr.markForCheck();
+  }
+
+  private getActiveParentIds(): Set<string> {
+    const path = this.findActivePath(this.items);
+    if (!path.length) return new Set<string>();
+    return new Set(path.slice(0, -1).map((x) => x.id));
   }
 
   private findActivePath(items: SidebarItem[], trail: SidebarItem[] = []): SidebarItem[] {
