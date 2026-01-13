@@ -16,6 +16,7 @@
   z-index: 100;
   box-shadow: var(--sidebar-shadow);
   border-radius: var(--sidebar-radius);
+  overflow: visible;
 
   &.collapsed {
     width: var(--sidebar-width-collapsed, 90px);
@@ -40,6 +41,19 @@
     .menu-icon {
       margin-right: 0;
       animation: icon-hide-show 0.7s ease;
+    }
+
+    .menu-item.has-children::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -5px;
+      width: 5px;
+      height: 100%;
+    }
+
+    .sidebar__content {
+      overflow-x: visible;
     }
   }
 
@@ -326,6 +340,103 @@
   margin-top: 4px;
 }
 
+// --- Collapsed Popup Panel ---
+.collapsed-popup {
+  position: fixed;
+  min-width: 220px;
+  max-width: 320px;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  border-radius: var(--sidebar-radius-item);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  padding: 8px 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(2px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 9999;
+}
+
+.collapsed-popup.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sidebar-text-secondary);
+  border-bottom: 1px solid var(--sidebar-border);
+  margin-bottom: 6px;
+}
+
+.popup-header-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.popup-list,
+.popup-sublist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.popup-item {
+  padding: 2px 6px;
+}
+
+.popup-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.popup-link:hover {
+  background-color: var(--sidebar-hover-bg);
+}
+
+.popup-item.active > .popup-link {
+  background-color: var(--sidebar-active-bg);
+  color: var(--sidebar-active-text);
+  font-weight: 600;
+}
+
+.popup-item.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.popup-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--sidebar-icon);
+}
+
+.popup-item.active > .popup-link .popup-icon {
+  color: var(--sidebar-icon-active);
+}
+
+.popup-sublist {
+  margin-left: 16px;
+  padding-left: 8px;
+  border-left: 1px solid var(--sidebar-border);
+}
+
 // --- Footer ---
 .sidebar__footer {
   padding: 16px;
@@ -462,75 +573,5 @@
   100% {
     opacity: 1;
     transform: translateX(0);
-  }
-}
-
-::ng-deep {
-  // --- Tooltip Styles ---
-  .sidebar-tooltip {
-    background-color: var(--sidebar-bg) !important;
-    color: var(--sidebar-text) !important;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-    font-size: 13px !important;
-    padding: 8px 12px !important;
-    border-radius: var(--sidebar-radius-item) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  // --- Menu Popup Styles ---
-  .sidebar-popup-menu {
-    background-color: var(--sidebar-bg) !important;
-    border-radius: var(--sidebar-radius-item) !important;
-    padding: 8px 0;
-    max-width: 300px; // Evitar menús gigantes
-
-    // Override standard mat-menu-item styles
-    .mat-mdc-menu-item {
-      color: var(--sidebar-text) !important;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-      font-size: 14px !important;
-      min-height: 44px !important; // Compact rows
-      line-height: 44px !important;
-
-      mat-icon {
-        color: var(--sidebar-icon);
-        margin-right: 12px;
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      &:hover,
-      &.cdk-focused {
-        background-color: var(--sidebar-hover-bg) !important;
-
-        mat-icon {
-          color: var(--sidebar-text);
-        }
-      }
-
-      &.active-menu-item {
-        color: var(--sidebar-active-text) !important;
-        background-color: var(--sidebar-active-bg) !important;
-        font-weight: 500;
-
-        mat-icon {
-          color: var(--sidebar-icon-active);
-        }
-      }
-
-      &[disabled] {
-        opacity: 0.5;
-      }
-
-      // Fix icon alignment in MDC
-      .mat-mdc-menu-item-text {
-        display: flex !important;
-        align-items: center !important;
-      }
-    }
   }
 }

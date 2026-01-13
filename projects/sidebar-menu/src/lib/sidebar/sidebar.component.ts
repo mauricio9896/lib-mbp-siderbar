@@ -14,8 +14,6 @@ import {
 } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { SidebarItem, SidebarTheme, SidebarThemeConfig } from './sidebar.types';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -31,8 +29,6 @@ import { applyThemeVariables } from './siderbar.theme';
     RouterLink,
     RouterLinkActive,
     MatRippleModule,
-    MatTooltipModule,
-    MatMenuModule,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
@@ -67,6 +63,12 @@ export class SidebarComponent implements OnChanges, OnInit {
   public collapsed = false;
   private _destroy$ = new Subject<void>();
   private expandedIds = new Set<string>();
+  public openPopupItem: SidebarItem | null = null;
+  public popupTop = 0;
+  public popupLeft = 0;
+  private popupHovered = false;
+  private popupAnchorEl: HTMLElement | null = null;
+  private closePopupTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     this._router.events
@@ -107,6 +109,7 @@ export class SidebarComponent implements OnChanges, OnInit {
     // Si colapsa, cerramos submenús por UX
     if (this.collapsed) {
       this.expandedIds.clear();
+      this.closePopup();
     } else {
       // al expandir de vuelta, re-sincroniza con activo
       this.syncExpandedWithActive();
@@ -125,9 +128,13 @@ export class SidebarComponent implements OnChanges, OnInit {
   }
 
   onItemClick(item: SidebarItem, event: Event): void {
-    if (this.collapsed && item.children?.length) {
-      event.preventDefault();
-      return;
+    if (this.collapsed) {
+      if (item.children?.length) {
+        event.preventDefault();
+        this.toggleCollapsedPopup(item, event);
+        return;
+      }
+      this.closePopup();
     }
 
     // Lógica estándar cuando no está colapsado
@@ -174,6 +181,10 @@ export class SidebarComponent implements OnChanges, OnInit {
     }
 
     if (item.children?.length && !item.route && !item.url) {
+      if (this.collapsed) {
+        event?.preventDefault();
+        return;
+      }
       event?.preventDefault();
       this.toggleItem(item, event);
       return;
@@ -181,6 +192,82 @@ export class SidebarComponent implements OnChanges, OnInit {
 
     this.itemSelected.emit(item);
     this.closeMobile();
+    this.closePopup();
+  }
+
+  onCollapsedItemEnter(item: SidebarItem, event: MouseEvent): void {
+    if (!this.collapsed || item.disabled) return;
+    this.openPopupItem = item;
+    this.popupAnchorEl = event.currentTarget as HTMLElement;
+    this.positionPopupFromAnchor();
+    this.clearClosePopupTimer();
+  }
+
+  onCollapsedItemLeave(item: SidebarItem): void {
+    if (!this.collapsed || item.disabled) return;
+    if (this.openPopupItem?.id === item.id) {
+      this.scheduleClosePopup();
+    }
+  }
+
+  onCollapsedPopupEnter(): void {
+    this.popupHovered = true;
+    this.clearClosePopupTimer();
+  }
+
+  onCollapsedPopupLeave(): void {
+    this.popupHovered = false;
+    this.scheduleClosePopup();
+  }
+
+  toggleCollapsedPopup(item: SidebarItem, event?: Event): void {
+    if (!this.collapsed || item.disabled) return;
+    if (this.openPopupItem?.id === item.id) {
+      this.closePopup();
+      return;
+    }
+    const target = event?.currentTarget as HTMLElement | null;
+    const anchor = target?.closest('.menu-item') as HTMLElement | null;
+    this.openPopupItem = item;
+    this.popupAnchorEl = anchor;
+    this.positionPopupFromAnchor();
+    this.clearClosePopupTimer();
+  }
+
+  onCollapsedScroll(): void {
+    if (!this.openPopupItem || !this.popupAnchorEl) return;
+    this.positionPopupFromAnchor();
+  }
+
+  private positionPopupFromAnchor(): void {
+    if (!this.popupAnchorEl) return;
+    const rect = this.popupAnchorEl.getBoundingClientRect();
+    this.popupTop = rect.top;
+    this.popupLeft = rect.right + 5;
+    this._cdr.markForCheck();
+  }
+
+  private scheduleClosePopup(): void {
+    this.clearClosePopupTimer();
+    this.closePopupTimer = setTimeout(() => {
+      if (!this.popupHovered) {
+        this.closePopup();
+      }
+    }, 120);
+  }
+
+  private clearClosePopupTimer(): void {
+    if (this.closePopupTimer) {
+      clearTimeout(this.closePopupTimer);
+      this.closePopupTimer = null;
+    }
+  }
+
+  private closePopup(): void {
+    this.openPopupItem = null;
+    this.popupAnchorEl = null;
+    this.popupHovered = false;
+    this.clearClosePopupTimer();
   }
 
   isExpanded(item: SidebarItem): boolean {
