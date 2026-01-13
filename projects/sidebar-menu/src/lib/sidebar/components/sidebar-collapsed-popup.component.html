@@ -1,0 +1,63 @@
+<div
+  class="collapsed-popup open"
+  [style.top.px]="top()"
+  [style.left.px]="left()"
+  (mouseenter)="popupEnter.emit()"
+  (mouseleave)="popupLeave.emit()"
+>
+  @if (openItem()?.children?.length) {
+    <div class="popup-header">
+      @if (openItem()?.icon) {
+        <mat-icon class="popup-header-icon">{{ openItem()?.icon }}</mat-icon>
+      }
+      <span class="popup-header-label">{{ openItem()?.label }}</span>
+    </div>
+    <ul class="popup-list">
+      <ng-container
+        *ngTemplateOutlet="collapsedPanelTemplate; context: { $implicit: openItem()?.children || [], level: 0 }"
+      ></ng-container>
+    </ul>
+  } @else {
+    <ul class="popup-list">
+      <li class="popup-item" [class.active]="isActive(openItem())">
+        <a
+          class="popup-link"
+          [routerLink]="openItem()?.route || null"
+          [attr.href]="!openItem()?.route ? openItem()?.url || null : null"
+          (click)="emitSelect(openItem(), $event)"
+        >
+          @if (openItem()?.icon) {
+            <mat-icon class="popup-icon">{{ openItem()?.icon }}</mat-icon>
+          }
+          <span class="popup-label">{{ openItem()?.label }}</span>
+        </a>
+      </li>
+    </ul>
+  }
+</div>
+
+<!-- RECURSIVE COLLAPSED PANEL TEMPLATE -->
+<ng-template #collapsedPanelTemplate let-items let-level="level">
+  @for (child of items; track trackById($index, child)) {
+    <li class="popup-item" [class.active]="isActive(child)" [class.disabled]="child.disabled">
+      <a
+        class="popup-link"
+        [routerLink]="child.route || null"
+        [attr.href]="!child.route ? child.url || null : null"
+        (click)="emitSelect(child, $event)"
+      >
+        @if (child.icon) {
+          <mat-icon class="popup-icon">{{ child.icon }}</mat-icon>
+        }
+        <span class="popup-label">{{ child.label }}</span>
+      </a>
+      @if (child.children?.length) {
+        <ul class="popup-sublist">
+          <ng-container
+            *ngTemplateOutlet="collapsedPanelTemplate; context: { $implicit: child.children, level: level + 1 }"
+          ></ng-container>
+        </ul>
+      }
+    </li>
+  }
+</ng-template>

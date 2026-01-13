@@ -20,6 +20,7 @@ import { SidebarItem, SidebarTheme, SidebarThemeConfig } from './sidebar.types';
 import { filter } from 'rxjs/operators';
 import { applyThemeVariables } from './siderbar.theme';
 import { DOCUMENT } from '@angular/common';
+import { SidebarCollapsedPopupComponent } from './components/sidebar-collapsed-popup.component';
 
 @Component({
   selector: 'lib-sidebar',
@@ -29,6 +30,7 @@ import { DOCUMENT } from '@angular/common';
     RouterLink,
     RouterLinkActive,
     MatRippleModule,
+    SidebarCollapsedPopupComponent,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
@@ -57,6 +59,7 @@ export class SidebarComponent {
   readonly itemSelected = output<SidebarItem>();
 
   readonly overlayThemeClass = computed(() => `sidebar-theme-${this.theme()}`);
+  readonly isItemActiveFn = (item: SidebarItem | null | undefined): boolean => this.isItemActive(item);
 
   //Variables
   readonly collapsed = signal(false);
@@ -250,7 +253,7 @@ export class SidebarComponent {
     if (!this.popupAnchorEl) return;
     const rect = this.popupAnchorEl.getBoundingClientRect();
     this.popupTop.set(rect.top);
-    this.popupLeft.set(rect.right + 5);
+    this.popupLeft.set(rect.right + 12);
   }
 
   private scheduleClosePopup(): void {

@@ -119,67 +119,13 @@
 </ng-template>
 
 @if (collapsed() && openPopupItem()) {
-  <div
-    class="collapsed-popup open"
-    [style.top.px]="popupTop()"
-    [style.left.px]="popupLeft()"
-    (mouseenter)="onCollapsedPopupEnter()"
-    (mouseleave)="onCollapsedPopupLeave()"
-  >
-    @if (openPopupItem()?.children?.length) {
-      <div class="popup-header">
-        @if (openPopupItem()?.icon) {
-          <mat-icon class="popup-header-icon">{{ openPopupItem()?.icon }}</mat-icon>
-        }
-        <span class="popup-header-label">{{ openPopupItem()?.label }}</span>
-      </div>
-      <ul class="popup-list">
-        <ng-container
-          *ngTemplateOutlet="collapsedPanelTemplate; context: { $implicit: openPopupItem()?.children || [], level: 0 }"
-        ></ng-container>
-      </ul>
-    } @else {
-      <ul class="popup-list">
-        <li class="popup-item" [class.active]="isItemActive(openPopupItem())">
-          <a
-            class="popup-link"
-            [routerLink]="openPopupItem()?.route || null"
-            [attr.href]="!openPopupItem()?.route ? openPopupItem()?.url || null : null"
-            (click)="onSelect(openPopupItem() || null, $event)"
-          >
-            @if (openPopupItem()?.icon) {
-              <mat-icon class="popup-icon">{{ openPopupItem()?.icon }}</mat-icon>
-            }
-            <span class="popup-label">{{ openPopupItem()?.label }}</span>
-          </a>
-        </li>
-      </ul>
-    }
-  </div>
+  <lib-sidebar-collapsed-popup
+    [openItem]="openPopupItem()"
+    [top]="popupTop()"
+    [left]="popupLeft()"
+    [isItemActiveFn]="isItemActiveFn"
+    (popupEnter)="onCollapsedPopupEnter()"
+    (popupLeave)="onCollapsedPopupLeave()"
+    (itemSelect)="onSelect($event.item, $event.event)"
+  />
 }
-
-<!-- RECURSIVE COLLAPSED PANEL TEMPLATE -->
-<ng-template #collapsedPanelTemplate let-items let-level="level">
-  @for (child of items; track trackById($index, child)) {
-    <li class="popup-item" [class.active]="isItemActive(child)" [class.disabled]="child.disabled">
-      <a
-        class="popup-link"
-        [routerLink]="child.route || null"
-        [attr.href]="!child.route ? child.url || null : null"
-        (click)="onSelect(child, $event)"
-      >
-        @if (child.icon) {
-          <mat-icon class="popup-icon">{{ child.icon }}</mat-icon>
-        }
-        <span class="popup-label">{{ child.label }}</span>
-      </a>
-      @if (child.children?.length) {
-        <ul class="popup-sublist">
-          <ng-container
-            *ngTemplateOutlet="collapsedPanelTemplate; context: { $implicit: child.children, level: level + 1 }"
-          ></ng-container>
-        </ul>
-      }
-    </li>
-  }
-</ng-template>
