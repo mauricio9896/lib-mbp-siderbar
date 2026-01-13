@@ -2,9 +2,18 @@
 
 Reusable Angular sidebar component with dark/light theme, collapsible layout, and nested items. Built as a library with standalone components and SCSS styling.
 
-## Install and Build
+## Requirements
+- Angular `^21`
+- Angular Material `^21` (uses `MatIcon` and `MatRipple`)
+- Angular Router (only if you use `route` in items)
 
-Build the library:
+## Install
+
+```bash
+npm i sidebar-menu
+```
+
+## Build (library dev)
 
 ```bash
 ng build sidebar-menu
@@ -16,25 +25,34 @@ Use from another project by linking the built package or publishing from `dist/s
 
 ```ts
 import { Component } from '@angular/core';
-import { SidebarComponent, SIDEBAR_EXAMPLE_ITEMS, SidebarItem, SidebarTheme } from 'sidebar-menu';
+import {
+  SidebarComponent,
+  SIDEBAR_EXAMPLE_ITEMS,
+  SidebarItem,
+  SidebarTheme,
+} from 'sidebar-menu';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [SidebarComponent],
   template: `
     <lib-sidebar
       [items]="items"
       [theme]="theme"
-      [collapsed]="collapsed"
-      (collapsedChange)="collapsed = $event"
+      [mobileOpen]="mobileOpen"
+      (mobileOpenChange)="mobileOpen = $event"
+      (itemSelected)="onItemSelected($event)"
     ></lib-sidebar>
   `,
 })
 export class AppComponent {
   items: SidebarItem[] = SIDEBAR_EXAMPLE_ITEMS;
   theme: SidebarTheme = 'dark';
-  collapsed = false;
+  mobileOpen = false;
+
+  onItemSelected(item: SidebarItem): void {
+    // handle selection
+  }
 }
 ```
 
@@ -44,17 +62,23 @@ export class AppComponent {
 import { SidebarItem } from 'sidebar-menu';
 
 const items: SidebarItem[] = [
-  { id: 'dashboard', label: 'Dashboard', route: '/dashboard', icon: 'ri-dashboard-line' },
+  { id: 'dashboard', label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
   {
     id: 'analytics',
     label: 'Analytics',
-    icon: 'ri-line-chart-line',
+    icon: 'analytics',
     children: [
       { id: 'overview', label: 'Overview', route: '/analytics/overview' },
-      { id: 'reports', label: 'Reports', route: '/analytics/reports', badge: '4' },
+      {
+        id: 'reports',
+        label: 'Reports',
+        route: '/analytics/reports',
+        badge: '4',
+        badgeClass: 'badge-default',
+      },
     ],
   },
-  { id: 'support', label: 'Support', url: 'https://example.com', icon: 'ri-question-line' },
+  { id: 'support', label: 'Support', url: 'https://example.com', icon: 'help' },
 ];
 ```
 
@@ -62,47 +86,61 @@ const items: SidebarItem[] = [
 
 ### Inputs
 - `items: SidebarItem[]`
-- `collapsed: boolean`
 - `mobileOpen: boolean`
 - `theme: 'light' | 'dark'`
 - `title: string`
 - `subtitle: string`
 - `logoUrl?: string`
-- `activeItemId?: string`
-- `activeRoute?: string`
+- `themeConfig?: SidebarThemeConfig`
 - `allowMultipleOpen: boolean`
 
 ### Outputs
-- `collapsedChange: EventEmitter<boolean>`
 - `mobileOpenChange: EventEmitter<boolean>`
 - `itemSelected: EventEmitter<SidebarItem>`
 
 ## Theme
 
-The component uses CSS variables and `data-sidebar-theme` on the host.
+The component uses CSS variables and applies a `sidebar-theme-light` or
+`sidebar-theme-dark` class on `document.body` for overlays.
 
 ```html
 <lib-sidebar [theme]="'light'"></lib-sidebar>
 ```
 
-Optional service:
+You can customize colors and layout via `themeConfig`:
 
 ```ts
-import { ThemeService } from 'sidebar-menu';
+import { SidebarThemeConfig } from 'sidebar-menu';
 
-constructor(private themeService: ThemeService) {}
-
-setDark(): void {
-  this.themeService.setTheme('dark');
-}
+const themeConfig: SidebarThemeConfig = {
+  light: {
+    bg: '#ffffff',
+    text: '#4b5563',
+    activeBg: '#eff6ff',
+    activeText: '#2563eb',
+  },
+  dark: {
+    bg: '#101218',
+    text: '#f5f6f8',
+    activeBg: 'rgba(75, 108, 255, 0.16)',
+    activeText: '#ffffff',
+  },
+  layout: {
+    width: '280px',
+    radius: '12px',
+    radiusItem: '4px',
+    align: 'center',
+    lessHeight: '0px',
+  },
+};
 ```
 
 ## Icons
 
-Use `icon` with your own icon font or CSS classes.
+Use `icon` with any icon set compatible with `mat-icon` (for example, the Material Icons font).
 
 ```ts
-{ id: 'team', label: 'Team', route: '/team', icon: 'ri-team-line' }
+{ id: 'team', label: 'Team', route: '/team', icon: 'people' }
 ```
 
 ## Testing
