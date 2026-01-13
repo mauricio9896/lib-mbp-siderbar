@@ -55,6 +55,12 @@
     .sidebar__content {
       overflow-x: visible;
     }
+
+    .sidebar__footer {
+      .sidebar-toggle-btn{
+        width: 100%;
+      }
+    }
   }
 
   &:not(.collapsed) {
