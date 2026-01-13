@@ -1,12 +1,15 @@
 export type SidebarTheme = 'light' | 'dark';
 
+export type SidebarRoute = string | readonly unknown[];
+
 export interface SidebarItem {
   id: string;
   label: string;
-  route?: string | any[];
+  route?: SidebarRoute;
   url?: string;
   icon?: string;
   badge?: string;
+  badgeClass?: string;
   disabled?: boolean;
   children?: SidebarItem[];
 }

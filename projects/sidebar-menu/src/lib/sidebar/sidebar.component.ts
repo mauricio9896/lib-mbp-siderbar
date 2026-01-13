@@ -1,28 +1,28 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
+  DestroyRef,
   ElementRef,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
+  computed,
+  effect,
   inject,
+  input,
+  output,
+  signal,
+  untracked,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { SidebarItem, SidebarTheme, SidebarThemeConfig } from './sidebar.types';
-import { filter, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { applyThemeVariables } from './siderbar.theme';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'lib-sidebar',
-  standalone: true,
   imports: [
     CommonModule,
     MatIconModule,
@@ -34,38 +34,37 @@ import { applyThemeVariables } from './siderbar.theme';
   styleUrl: './sidebar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidebarComponent implements OnChanges, OnInit {
-  private _cdr = inject(ChangeDetectorRef);
-  private _elementRef = inject(ElementRef);
+export class SidebarComponent {
+  private _destroyRef = inject(DestroyRef);
+  private _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private _router = inject(Router);
+  private _document = inject(DOCUMENT);
 
   // variables requeridas
-  @Input() title = 'Workspace';
-  @Input() items: SidebarItem[] = [];
-  @Input() logoUrl?: string;
-  @Input() mobileOpen = false;
+  readonly title = input('Workspace');
+  readonly items = input<SidebarItem[]>([]);
+  readonly logoUrl = input<string | undefined>(undefined);
+  readonly mobileOpen = input(false);
 
   // Opciones del siderbar para una configuracion mas perzonalida
-  @Input() subtitle = 'Overview';
-  @Input() theme: SidebarTheme = 'light';
-  @Input() themeConfig?: SidebarThemeConfig;
-  @Input() allowMultipleOpen = false;
+  readonly subtitle = input('Overview');
+  readonly theme = input<SidebarTheme>('light');
+  readonly themeConfig = input<SidebarThemeConfig | undefined>(undefined);
+  readonly allowMultipleOpen = input(false);
 
   // salidas del siderbar
-  @Output() mobileOpenChange = new EventEmitter<boolean>();
-  @Output() itemSelected = new EventEmitter<SidebarItem>();
+  readonly mobileOpenChange = output<boolean>();
+  readonly itemSelected = output<SidebarItem>();
 
-  get overlayThemeClass(): string {
-    return `sidebar-theme-${this.theme}`;
-  }
+  readonly overlayThemeClass = computed(() => `sidebar-theme-${this.theme()}`);
 
   //Variables
-  public collapsed = false;
-  private _destroy$ = new Subject<void>();
-  private expandedIds = new Set<string>();
-  public openPopupItem: SidebarItem | null = null;
-  public popupTop = 0;
-  public popupLeft = 0;
+  readonly collapsed = signal(false);
+  readonly expandedIds = signal<ReadonlySet<string>>(new Set());
+  readonly openPopupItem = signal<SidebarItem | null>(null);
+  readonly popupTop = signal(0);
+  readonly popupLeft = signal(0);
+  readonly mobileOpenState = signal(false);
   private popupHovered = false;
   private popupAnchorEl: HTMLElement | null = null;
   private closePopupTimer: ReturnType<typeof setTimeout> | null = null;
@@ -74,41 +73,33 @@ export class SidebarComponent implements OnChanges, OnInit {
     this._router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        takeUntil(this._destroy$)
+        takeUntilDestroyed(this._destroyRef)
       )
       .subscribe(() => {
-        this._cdr.markForCheck();
         this.syncExpandedWithActive();
       });
-  }
 
-  ngOnInit(): void {
-    applyThemeVariables(this.theme, this._elementRef, this.themeConfig);
-  }
+    effect(() => {
+      this.mobileOpenState.set(this.mobileOpen());
+    });
 
-  ngOnDestroy(): void {
-    this._destroy$.next();
-    this._destroy$.complete();
-  }
+    effect(() => {
+      applyThemeVariables(this.theme(), this._elementRef, this._document, this.themeConfig());
+    });
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // Auto-expand cuando cambien items
-    if (changes['items']) {
+    effect(() => {
+      this.items();
       this.syncExpandedWithActive();
-    }
-
-    // Aplicar variables cuando cambia el tema o themeConfig
-    if (changes['theme'] || changes['themeConfig']) {
-      applyThemeVariables(this.theme, this._elementRef, this.themeConfig);
-    }
+    });
   }
 
   toggleCollapse(): void {
-    this.collapsed = !this.collapsed;
+    const nextCollapsed = !this.collapsed();
+    this.collapsed.set(nextCollapsed);
 
     // Si colapsa, cerramos submenús por UX
-    if (this.collapsed) {
-      this.expandedIds.clear();
+    if (nextCollapsed) {
+      this.expandedIds.set(new Set());
       this.closePopup();
     } else {
       // al expandir de vuelta, re-sincroniza con activo
@@ -117,18 +108,19 @@ export class SidebarComponent implements OnChanges, OnInit {
   }
 
   closeMobile(): void {
-    if (!this.mobileOpen) return;
-    this.mobileOpen = false;
+    if (!this.mobileOpenState()) return;
+    this.mobileOpenState.set(false);
     this.mobileOpenChange.emit(false);
   }
 
   toggleMobile(): void {
-    this.mobileOpen = !this.mobileOpen;
-    this.mobileOpenChange.emit(this.mobileOpen);
+    const nextOpen = !this.mobileOpenState();
+    this.mobileOpenState.set(nextOpen);
+    this.mobileOpenChange.emit(nextOpen);
   }
 
   onItemClick(item: SidebarItem, event: Event): void {
-    if (this.collapsed) {
+    if (this.collapsed()) {
       if (item.children?.length) {
         event.preventDefault();
         this.toggleCollapsedPopup(item, event);
@@ -152,28 +144,35 @@ export class SidebarComponent implements OnChanges, OnInit {
 
     if (!item.children?.length) return;
 
-    const isOpen = this.expandedIds.has(item.id);
+    const isOpen = this.expandedIds().has(item.id);
 
     if (isOpen && this.isItemActive(item)) {
       return;
     }
 
-    if (!this.allowMultipleOpen) {
+    if (!this.allowMultipleOpen()) {
       const activeParentIds = this.getActiveParentIds();
-      this.expandedIds.clear();
-      activeParentIds.forEach((id) => this.expandedIds.add(id));
+      this.expandedIds.set(new Set(activeParentIds));
     }
 
-    if (isOpen) {
-      this.expandedIds.delete(item.id);
-    } else {
-      this.expandedIds.add(item.id);
-    }
-
-    this._cdr.markForCheck();
+    this.expandedIds.update((current) => {
+      const next = new Set(current);
+      if (isOpen) {
+        next.delete(item.id);
+      } else {
+        next.add(item.id);
+      }
+      return next;
+    });
   }
 
-  onSelect(item: SidebarItem, event?: Event): void {
+  onSelect(item: SidebarItem | null, event?: Event): void {
+    if (!item) {
+      event?.preventDefault();
+      event?.stopPropagation();
+      return;
+    }
+
     if (item.disabled) {
       event?.preventDefault();
       event?.stopPropagation();
@@ -181,7 +180,7 @@ export class SidebarComponent implements OnChanges, OnInit {
     }
 
     if (item.children?.length && !item.route && !item.url) {
-      if (this.collapsed) {
+      if (this.collapsed()) {
         event?.preventDefault();
         return;
       }
@@ -196,16 +195,16 @@ export class SidebarComponent implements OnChanges, OnInit {
   }
 
   onCollapsedItemEnter(item: SidebarItem, event: MouseEvent): void {
-    if (!this.collapsed || item.disabled) return;
-    this.openPopupItem = item;
+    if (!this.collapsed() || item.disabled) return;
+    this.openPopupItem.set(item);
     this.popupAnchorEl = event.currentTarget as HTMLElement;
     this.positionPopupFromAnchor();
     this.clearClosePopupTimer();
   }
 
   onCollapsedItemLeave(item: SidebarItem): void {
-    if (!this.collapsed || item.disabled) return;
-    if (this.openPopupItem?.id === item.id) {
+    if (!this.collapsed() || item.disabled) return;
+    if (this.openPopupItem()?.id === item.id) {
       this.scheduleClosePopup();
     }
   }
@@ -221,30 +220,29 @@ export class SidebarComponent implements OnChanges, OnInit {
   }
 
   toggleCollapsedPopup(item: SidebarItem, event?: Event): void {
-    if (!this.collapsed || item.disabled) return;
-    if (this.openPopupItem?.id === item.id) {
+    if (!this.collapsed() || item.disabled) return;
+    if (this.openPopupItem()?.id === item.id) {
       this.closePopup();
       return;
     }
     const target = event?.currentTarget as HTMLElement | null;
     const anchor = target?.closest('.menu-item') as HTMLElement | null;
-    this.openPopupItem = item;
+    this.openPopupItem.set(item);
     this.popupAnchorEl = anchor;
     this.positionPopupFromAnchor();
     this.clearClosePopupTimer();
   }
 
   onCollapsedScroll(): void {
-    if (!this.openPopupItem || !this.popupAnchorEl) return;
+    if (!this.openPopupItem() || !this.popupAnchorEl) return;
     this.positionPopupFromAnchor();
   }
 
   private positionPopupFromAnchor(): void {
     if (!this.popupAnchorEl) return;
     const rect = this.popupAnchorEl.getBoundingClientRect();
-    this.popupTop = rect.top;
-    this.popupLeft = rect.right + 5;
-    this._cdr.markForCheck();
+    this.popupTop.set(rect.top);
+    this.popupLeft.set(rect.right + 5);
   }
 
   private scheduleClosePopup(): void {
@@ -264,17 +262,19 @@ export class SidebarComponent implements OnChanges, OnInit {
   }
 
   private closePopup(): void {
-    this.openPopupItem = null;
+    this.openPopupItem.set(null);
     this.popupAnchorEl = null;
     this.popupHovered = false;
     this.clearClosePopupTimer();
   }
 
   isExpanded(item: SidebarItem): boolean {
-    return this.expandedIds.has(item.id);
+    return this.expandedIds().has(item.id);
   }
 
-  isItemActive(item: SidebarItem): boolean {
+  isItemActive(item: SidebarItem | null | undefined): boolean {
+    if (!item) return false;
+
     if (item.route) {
       const urlTree = this._router.createUrlTree(
         Array.isArray(item.route) ? item.route : [item.route]
@@ -304,23 +304,22 @@ export class SidebarComponent implements OnChanges, OnInit {
 
   private syncExpandedWithActive(): void {
     // Busca ruta activa automáticamente si no se provee desde fuera
-    const path = this.findActivePath(this.items);
+    const path = this.findActivePath(this.items());
     if (!path.length) return;
 
     // Expande todos los padres del item activo
     // (menos el último, que es el item final)
     const parentIds = path.slice(0, -1).map((x) => x.id);
 
-    if (!this.allowMultipleOpen) {
-      this.expandedIds.clear();
-    }
-
-    parentIds.forEach((id) => this.expandedIds.add(id));
-    this._cdr.markForCheck();
+    const next = this.allowMultipleOpen()
+      ? new Set(untracked(() => this.expandedIds()))
+      : new Set<string>();
+    parentIds.forEach((id) => next.add(id));
+    this.expandedIds.set(next);
   }
 
   private getActiveParentIds(): Set<string> {
-    const path = this.findActivePath(this.items);
+    const path = this.findActivePath(this.items());
     if (!path.length) return new Set<string>();
     return new Set(path.slice(0, -1).map((x) => x.id));
   }

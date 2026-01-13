@@ -37,7 +37,12 @@ const DEFAULT_LAYOUT: SidebarLayout = {
  * Aplica las variables CSS customizadas según el tema actual.
  * Si no hay themeConfig, usa los valores por defecto.
  */
-export function applyThemeVariables(theme: SidebarTheme, _elementRef: ElementRef<any>, themeConfig?: SidebarThemeConfig): void {
+export function applyThemeVariables(
+  theme: SidebarTheme,
+  _elementRef: ElementRef<HTMLElement>,
+  documentRef: Document,
+  themeConfig?: SidebarThemeConfig
+): void {
   const host = _elementRef.nativeElement;
 
   // Merge con temas por defecto
@@ -70,17 +75,17 @@ export function applyThemeVariables(theme: SidebarTheme, _elementRef: ElementRef
 
   // Aplicar clase de tema en body para overlays (tooltips, menús)
   const themeClass = `sidebar-theme-${theme}`;
-  document.body.classList.remove('sidebar-theme-light', 'sidebar-theme-dark');
-  document.body.classList.add(themeClass);
+  documentRef.body.classList.remove('sidebar-theme-light', 'sidebar-theme-dark');
+  documentRef.body.classList.add(themeClass);
 
   // Si hay customización, aplicar variables CSS personalizadas en body
   if (themeConfig) {
     // Crear elemento style o actualizar si existe
-    let styleEl = document.getElementById('sidebar-overlay-theme') as HTMLStyleElement;
+    let styleEl = documentRef.getElementById('sidebar-overlay-theme') as HTMLStyleElement;
     if (!styleEl) {
-      styleEl = document.createElement('style');
+      styleEl = documentRef.createElement('style');
       styleEl.id = 'sidebar-overlay-theme';
-      document.head.appendChild(styleEl);
+      documentRef.head.appendChild(styleEl);
     }
 
     // Generar CSS para overlays con valores customizados

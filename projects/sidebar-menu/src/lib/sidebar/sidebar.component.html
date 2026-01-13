@@ -1,17 +1,17 @@
-<aside class="sidebar" [class.collapsed]="collapsed" [class.mobile-open]="mobileOpen">
+<aside class="sidebar" [class.collapsed]="collapsed()" [class.mobile-open]="mobileOpenState()">
   <!-- HEADER -->
   <div class="sidebar__header">
     <div class="brand">
-      @if (logoUrl) {
+      @if (logoUrl()) {
       <div class="brand__logo-wrapper">
-        <img [src]="logoUrl" [alt]="title" class="brand__logo" />
+        <img [src]="logoUrl()" [alt]="title()" class="brand__logo" />
       </div>
       }
 
-      <div class="brand__info" [class.visible]="!collapsed">
-        <span class="brand__title">{{ title }}</span>
-        @if (subtitle) {
-          <span class="brand__subtitle">{{ subtitle }}</span>
+      <div class="brand__info" [class.visible]="!collapsed()">
+        <span class="brand__title">{{ title() }}</span>
+        @if (subtitle()) {
+          <span class="brand__subtitle">{{ subtitle() }}</span>
         }
       </div>
     </div>
@@ -21,7 +21,7 @@
   <nav class="sidebar__content custom-scrollbar" (scroll)="onCollapsedScroll()">
     <ul class="menu-list">
       <ng-container
-        *ngTemplateOutlet="menuTemplate; context: { $implicit: items, level: 0 }"
+        *ngTemplateOutlet="menuTemplate; context: { $implicit: items(), level: 0 }"
       ></ng-container>
     </ul>
   </nav>
@@ -33,17 +33,17 @@
           class="sidebar-toggle-btn"
           type="button"
           (click)="toggleCollapse()"
-          [attr.aria-label]="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+          [attr.aria-label]="collapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
           matRipple
         >
-        <mat-icon>{{ collapsed ? 'menu_open' : 'chevron_left' }}</mat-icon>
+        <mat-icon>{{ collapsed() ? 'menu_open' : 'chevron_left' }}</mat-icon>
       </button>
     </div>
   </div>
 </aside>
 
 <!-- BACKDROP FOR MOBILE -->
-@if (mobileOpen) {
+@if (mobileOpenState()) {
   <div class="sidebar-backdrop" (click)="closeMobile()"></div>
 }
 
@@ -63,7 +63,7 @@
       <!-- ITEM ROW -->
       <div
         class="menu-link-wrapper"
-        [class.parent-active]="isExpanded(item) && !collapsed"
+      [class.parent-active]="isExpanded(item) && !collapsed()"
         matRipple
         [matRippleDisabled]="item.disabled"
       >
@@ -81,11 +81,11 @@
             <mat-icon class="menu-icon">{{ item.icon }}</mat-icon>
           }
 
-          <span class="menu-label" [class.visible]="!collapsed">
+          <span class="menu-label" [class.visible]="!collapsed()">
             {{ item.label }}
           </span>
 
-          @if (!collapsed) {
+          @if (!collapsed()) {
              <div class="spacer"></div>
 
              @if (item.badge) {
@@ -105,7 +105,7 @@
 
 
       <!-- SUBMENU (Standard) -->
-      @if (item.children?.length && !collapsed) {
+      @if (item.children?.length && !collapsed()) {
         <ul class="submenu">
           <ng-container
             *ngTemplateOutlet="menuTemplate; context: { $implicit: item.children, level: level + 1 }"
@@ -116,39 +116,39 @@
   }
 </ng-template>
 
-@if (collapsed && openPopupItem) {
+@if (collapsed() && openPopupItem()) {
   <div
     class="collapsed-popup open"
-    [style.top.px]="popupTop"
-    [style.left.px]="popupLeft"
+    [style.top.px]="popupTop()"
+    [style.left.px]="popupLeft()"
     (mouseenter)="onCollapsedPopupEnter()"
     (mouseleave)="onCollapsedPopupLeave()"
   >
-    @if (openPopupItem?.children?.length) {
+    @if (openPopupItem()?.children?.length) {
       <div class="popup-header">
-        @if (openPopupItem?.icon) {
-          <mat-icon class="popup-header-icon">{{ openPopupItem?.icon }}</mat-icon>
+        @if (openPopupItem()?.icon) {
+          <mat-icon class="popup-header-icon">{{ openPopupItem()?.icon }}</mat-icon>
         }
-        <span class="popup-header-label">{{ openPopupItem?.label }}</span>
+        <span class="popup-header-label">{{ openPopupItem()?.label }}</span>
       </div>
       <ul class="popup-list">
         <ng-container
-          *ngTemplateOutlet="collapsedPanelTemplate; context: { $implicit: openPopupItem?.children || [], level: 0 }"
+          *ngTemplateOutlet="collapsedPanelTemplate; context: { $implicit: openPopupItem()?.children || [], level: 0 }"
         ></ng-container>
       </ul>
     } @else {
       <ul class="popup-list">
-        <li class="popup-item" [class.active]="isItemActive(openPopupItem)">
+        <li class="popup-item" [class.active]="isItemActive(openPopupItem())">
           <a
             class="popup-link"
-            [routerLink]="openPopupItem?.route || null"
-            [attr.href]="!openPopupItem?.route ? openPopupItem?.url || null : null"
-            (click)="onSelect(openPopupItem, $event)"
+            [routerLink]="openPopupItem()?.route || null"
+            [attr.href]="!openPopupItem()?.route ? openPopupItem()?.url || null : null"
+            (click)="onSelect(openPopupItem() || null, $event)"
           >
-            @if (openPopupItem?.icon) {
-              <mat-icon class="popup-icon">{{ openPopupItem?.icon }}</mat-icon>
+            @if (openPopupItem()?.icon) {
+              <mat-icon class="popup-icon">{{ openPopupItem()?.icon }}</mat-icon>
             }
-            <span class="popup-label">{{ openPopupItem?.label }}</span>
+            <span class="popup-label">{{ openPopupItem()?.label }}</span>
           </a>
         </li>
       </ul>
