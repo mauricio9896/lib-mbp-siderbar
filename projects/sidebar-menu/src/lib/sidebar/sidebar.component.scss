@@ -350,18 +350,18 @@
 // --- Collapsed Popup Panel ---
 .collapsed-popup {
   position: fixed;
-  min-width: 220px;
-  max-width: 320px;
+  min-width: 168px;
+  max-width: 168px;
   background: var(--sidebar-bg);
   color: var(--sidebar-text);
-  border-radius: var(--sidebar-radius-item);
+  border-radius: var(--sidebar-radius);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
   padding: 8px 0;
   opacity: 0;
   pointer-events: none;
   transform: translateY(2px);
   transition: opacity 0.15s ease, transform 0.15s ease;
-  z-index: 9999;
+  z-index: 100;
 }
 
 .collapsed-popup.open {
