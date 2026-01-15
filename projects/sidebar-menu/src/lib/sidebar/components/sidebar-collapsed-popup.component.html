@@ -23,7 +23,6 @@
         <a
           class="popup-link"
           [routerLink]="openItem()?.route || null"
-          [attr.href]="!openItem()?.route ? openItem()?.url || null : null"
           (click)="emitSelect(openItem(), $event)"
         >
           @if (openItem()?.icon) {

@@ -184,13 +184,7 @@ export class SidebarComponent {
       return;
     }
 
-    if (item.disabled) {
-      event?.preventDefault();
-      event?.stopPropagation();
-      return;
-    }
-
-    if (item.children?.length && !item.route && !item.url) {
+    if (item.children?.length && !item.route) {
       if (this.collapsed()) {
         event?.preventDefault();
         return;
@@ -206,7 +200,7 @@ export class SidebarComponent {
   }
 
   onCollapsedItemEnter(item: SidebarItem, event: MouseEvent): void {
-    if (!this.collapsed() || item.disabled) return;
+    if (!this.collapsed()) return;
     this.openPopupItem.set(item);
     this.popupAnchorEl = event.currentTarget as HTMLElement;
     this.positionPopupFromAnchor();
@@ -214,7 +208,7 @@ export class SidebarComponent {
   }
 
   onCollapsedItemLeave(item: SidebarItem): void {
-    if (!this.collapsed() || item.disabled) return;
+    if (!this.collapsed()) return;
     if (this.openPopupItem()?.id === item.id) {
       this.scheduleClosePopup();
     }
@@ -231,7 +225,7 @@ export class SidebarComponent {
   }
 
   toggleCollapsedPopup(item: SidebarItem, event?: Event): void {
-    if (!this.collapsed() || item.disabled) return;
+    if (!this.collapsed()) return;
     if (this.openPopupItem()?.id === item.id) {
       this.closePopup();
       return;
