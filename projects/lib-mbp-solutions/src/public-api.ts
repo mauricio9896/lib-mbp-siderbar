@@ -1,5 +1,5 @@
 /*
- * Public API Surface of sidebar-menu
+ * Public API Surface of lib-mbp-solutions
  */
 
 export * from './lib/sidebar/sidebar.component';

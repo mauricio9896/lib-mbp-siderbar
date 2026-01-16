@@ -5,7 +5,7 @@ import {
   AuthLoginResponse,
   AuthService,
   LoginComponent,
-} from 'sidebar-menu';
+} from 'lib-mbp-solutions';
 
 @Component({
   selector: 'app-login-page',

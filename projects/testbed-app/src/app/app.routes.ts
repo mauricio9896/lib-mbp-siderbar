@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthShellComponent } from './layout/auth-shell.component';
-import { authGuard } from '../../../sidebar-menu/src/lib/auth/guards/auth.guard';
-import { routeExistsGuard } from '../../../sidebar-menu/src/lib/auth/guards/route-exists.guard';
+import { authGuard, routeExistsGuard } from 'lib-mbp-solutions';
 
 export const routes: Routes = [
   {

@@ -2,7 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
-import { authAppProviders } from 'sidebar-menu';
+import { authAppProviders } from 'lib-mbp-solutions';
 
 import { routes } from './app.routes';
 

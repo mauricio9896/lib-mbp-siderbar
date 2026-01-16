@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/sidebar-menu",
+  "dest": "../../dist/lib-mbp-solutions",
   "lib": {
     "entryFile": "src/public-api.ts"
   }

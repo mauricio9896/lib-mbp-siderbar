@@ -6,20 +6,20 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "sidebar-menu": {
+    "lib-mbp-solutions": {
       "projectType": "library",
-      "root": "projects/sidebar-menu",
-      "sourceRoot": "projects/sidebar-menu/src",
+      "root": "projects/lib-mbp-solutions",
+      "sourceRoot": "projects/lib-mbp-solutions/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
           "configurations": {
             "production": {
-              "tsConfig": "projects/sidebar-menu/tsconfig.lib.prod.json"
+              "tsConfig": "projects/lib-mbp-solutions/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/sidebar-menu/tsconfig.lib.json"
+              "tsConfig": "projects/lib-mbp-solutions/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -27,7 +27,7 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/sidebar-menu/tsconfig.spec.json"
+            "tsConfig": "projects/lib-mbp-solutions/tsconfig.spec.json"
           }
         }
       }

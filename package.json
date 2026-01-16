@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "siderbar-menu:build": "ng build sidebar-menu --watch --configuration development"
+    "lib-mbp-solutions:build": "ng build lib-mbp-solutions --watch --configuration development"
   },
   "prettier": {
     "printWidth": 100,

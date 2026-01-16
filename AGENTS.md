@@ -1,5 +1,5 @@
 You are working in `/Users/mbuitrago/Documents/pruebas/front/mbp-workspace`.
-Project focus: the `sidebar-menu` Angular library.
+Project focus: the `lib-mbp-solutions` Angular library.
 
 # Angular Best Practices (v21)
 - Use standalone components by default; do NOT set `standalone: true`.
@@ -14,10 +14,10 @@ Project focus: the `sidebar-menu` Angular library.
 - Use `NgOptimizedImage` for static images (not base64).
 - Must pass WCAG AA and AXE checks (focus, contrast, ARIA).
 
-# Project Scope: sidebar-menu
-Code lives under `projects/sidebar-menu/`.
-Primary component: `projects/sidebar-menu/src/lib/sidebar/sidebar.component.ts`.
-Public API: `projects/sidebar-menu/src/public-api.ts`.
+# Project Scope: lib-mbp-solutions
+Code lives under `projects/lib-mbp-solutions/`.
+Primary component: `projects/lib-mbp-solutions/src/lib/sidebar/sidebar.component.ts`.
+Public API: `projects/lib-mbp-solutions/src/public-api.ts`.
 
 # Project Conventions
 - Keep public APIs stable and typed.

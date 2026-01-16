@@ -1,5 +1,5 @@
 {
-  "name": "sidebar-menu",
+  "name": "lib-mbp-solutions",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/cdk": "^21.0.0",

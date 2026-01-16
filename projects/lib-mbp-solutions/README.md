@@ -10,16 +10,16 @@ Reusable Angular sidebar component with dark/light theme, collapsible layout, an
 ## Install
 
 ```bash
-npm i sidebar-menu
+npm i lib-mbp-solutions
 ```
 
 ## Build (library dev)
 
 ```bash
-ng build sidebar-menu
+ng build lib-mbp-solutions
 ```
 
-Use from another project by linking the built package or publishing from `dist/sidebar-menu`.
+Use from another project by linking the built package or publishing from `dist/lib-mbp-solutions`.
 
 ## Basic Usage (Standalone)
 
@@ -30,7 +30,7 @@ import {
   SIDEBAR_EXAMPLE_ITEMS,
   SidebarItem,
   SidebarTheme,
-} from 'sidebar-menu';
+} from 'lib-mbp-solutions';
 
 @Component({
   selector: 'app-root',
@@ -59,7 +59,7 @@ export class AppComponent {
 ## Menu Config
 
 ```ts
-import { SidebarItem } from 'sidebar-menu';
+import { SidebarItem } from 'lib-mbp-solutions';
 
 const items: SidebarItem[] = [
   { id: 'dashboard', label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
@@ -110,7 +110,7 @@ The component uses CSS variables and applies a `sidebar-theme-light` or
 You can customize colors and layout via `themeConfig`:
 
 ```ts
-import { SidebarThemeConfig } from 'sidebar-menu';
+import { SidebarThemeConfig } from 'lib-mbp-solutions';
 
 const themeConfig: SidebarThemeConfig = {
   light: {

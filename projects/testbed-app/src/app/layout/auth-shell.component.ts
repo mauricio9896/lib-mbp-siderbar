@@ -12,7 +12,7 @@ import {
   SidebarTheme,
   SidebarThemeColors,
   SidebarThemeConfig,
-} from 'sidebar-menu';
+} from 'lib-mbp-solutions';
 
 @Component({
   selector: 'app-auth-shell',
