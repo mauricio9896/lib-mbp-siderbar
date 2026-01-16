@@ -21,11 +21,16 @@ import {
       />
     </section>
   `,
-  styleUrl: './login-page.component.scss',
+  styles: `
+    .login-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    class: 'app-login-page',
-  },
 })
 export class LoginPageComponent {
   private auth = inject(AuthService);
