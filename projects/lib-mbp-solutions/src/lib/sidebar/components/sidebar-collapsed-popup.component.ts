@@ -10,7 +10,7 @@ export type SidebarPopupSelectEvent = {
 };
 
 @Component({
-  selector: 'lib-sidebar-collapsed-popup',
+  selector: 'mbp-sidebar-collapsed-popup',
   imports: [CommonModule, MatIconModule, RouterLink],
   templateUrl: './sidebar-collapsed-popup.component.html',
   styleUrl: './sidebar-collapsed-popup.component.scss',

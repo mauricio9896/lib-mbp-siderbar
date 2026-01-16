@@ -12,7 +12,7 @@ import {
   imports: [LoginComponent],
   template: `
     <section class="login-page">
-      <lib-login
+      <mbp-login
         title="Welcome MPB Solutions"
         subtitle="Sign in to explore our app"
         [loading]="loading()"

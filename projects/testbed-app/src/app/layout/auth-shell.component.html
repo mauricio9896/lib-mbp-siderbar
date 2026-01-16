@@ -1,5 +1,5 @@
 <div class="app is-authenticated">
-  <lib-sidebar
+  <mbp-sidebar
     [items]="items()"
     [title]="title"
     [logoUrl]="logoUrl"
@@ -9,7 +9,7 @@
     [themeConfig]="themeConfig"
     [allowMultipleOpen]="allowMultipleOpen()"
     (mobileOpenChange)="mobileOpen.set($event)"
-  ></lib-sidebar>
+  ></mbp-sidebar>
 
   <div class="content">
     <header class="content__header">

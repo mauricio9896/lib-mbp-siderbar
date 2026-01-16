@@ -23,7 +23,7 @@ import { DOCUMENT } from '@angular/common';
 import { SidebarCollapsedPopupComponent } from './components/sidebar-collapsed-popup.component';
 
 @Component({
-  selector: 'lib-sidebar',
+  selector: 'mbp-sidebar',
   imports: [
     CommonModule,
     MatIconModule,

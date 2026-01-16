@@ -36,13 +36,13 @@ import {
   selector: 'app-root',
   imports: [SidebarComponent],
   template: `
-    <lib-sidebar
+    <mbp-sidebar
       [items]="items"
       [theme]="theme"
       [mobileOpen]="mobileOpen"
       (mobileOpenChange)="mobileOpen = $event"
       (itemSelected)="onItemSelected($event)"
-    ></lib-sidebar>
+    ></mbp-sidebar>
   `,
 })
 export class AppComponent {
@@ -104,7 +104,7 @@ The component uses CSS variables and applies a `sidebar-theme-light` or
 `sidebar-theme-dark` class on `document.body` for overlays.
 
 ```html
-<lib-sidebar [theme]="'light'"></lib-sidebar>
+<mbp-sidebar [theme]="'light'"></mbp-sidebar>
 ```
 
 You can customize colors and layout via `themeConfig`:

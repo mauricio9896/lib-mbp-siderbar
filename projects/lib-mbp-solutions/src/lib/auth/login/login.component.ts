@@ -3,13 +3,13 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
 import { LoginRequest } from '../services/auth.service';
 
 @Component({
-  selector: 'lib-login',
+  selector: 'mbp-login',
   imports: [CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'lib-login',
+    class: 'mbp-login',
   },
 })
 export class LoginComponent {
