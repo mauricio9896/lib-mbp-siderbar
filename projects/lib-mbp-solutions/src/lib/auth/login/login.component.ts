@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { LoginRequest } from '../services/auth.service';
 
 @Component({
   selector: 'mbp-login',
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +23,7 @@ export class LoginComponent {
 
   readonly username = signal('');
   readonly password = signal('');
+  readonly showPassword = signal(false);
 
   readonly canSubmit = computed(() => {
     return !this.loading() && this.username().trim().length > 0 && this.password().length > 0;
@@ -44,5 +46,13 @@ export class LoginComponent {
   onPasswordInput(event: Event): void {
     const target = event.target as HTMLInputElement | null;
     this.password.set(target?.value ?? '');
+  }
+
+  showPasswordOn(): void {
+    this.showPassword.set(true);
+  }
+
+  showPasswordOff(): void {
+    this.showPassword.set(false);
   }
 }

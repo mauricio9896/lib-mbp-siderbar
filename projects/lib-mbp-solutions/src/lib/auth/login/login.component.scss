@@ -53,11 +53,47 @@
   padding: 10px 12px;
   font-size: 14px;
   outline: none;
+  width: 100%;
 }
 
 .login-input:focus-visible {
   border-color: #1a73e8;
   box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+}
+
+.login-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-input-wrapper .login-input {
+  padding-right: 70px;
+}
+
+.login-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #1a73e8;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-toggle:focus-visible {
+  outline: 2px solid #1a73e8;
+  outline-offset: 2px;
+}
+
+.login-toggle mat-icon {
+  font-size: 18px;
 }
 
 .login-submit {
