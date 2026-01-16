@@ -1,47 +1,45 @@
-import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
-
-@Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  template: `<h2>Dashboard</h2><p>Overview and key metrics.</p>`,
-})
-class DashboardComponent {}
-
-@Component({
-  selector: 'app-analytics-overview',
-  standalone: true,
-  template: `<h2>Analytics Overview</h2><p>Summary for analytics.</p>`,
-})
-class AnalyticsOverviewComponent {}
-
-@Component({
-  selector: 'app-analytics-reports',
-  standalone: true,
-  template: `<h2>Analytics Reports</h2><p>Reports and insights.</p>`,
-})
-class AnalyticsReportsComponent {}
-
-@Component({
-  selector: 'app-team',
-  standalone: true,
-  template: `<h2>Team</h2><p>Members and roles.</p>`,
-})
-class TeamComponent {}
-
-@Component({
-  selector: 'app-settings',
-  standalone: true,
-  template: `<h2>Settings</h2><p>Application settings.</p>`,
-})
-class SettingsComponent {}
+import { AuthShellComponent } from './layout/auth-shell.component';
+import { authGuard } from '../../../sidebar-menu/src/lib/auth/guards/auth.guard';
+import { routeExistsGuard } from '../../../sidebar-menu/src/lib/auth/guards/route-exists.guard';
 
 export const routes: Routes = [
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'analytics/overview', component: AnalyticsOverviewComponent },
-  { path: 'analytics/reports', component: AnalyticsReportsComponent },
-  { path: 'team/overview', component: AnalyticsOverviewComponent },
-  { path: 'team/reports', component: AnalyticsReportsComponent },
-  { path: 'settings', component: SettingsComponent },
-  { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/auth/login-page.component').then((m) => m.LoginPageComponent),
+  },
+  {
+    path: 'no-access',
+    loadComponent: () =>
+      import('./features/auth/no-access.component').then((m) => m.NoAccessComponent),
+  },
+  {
+    path: '',
+    component: AuthShellComponent,
+    canActivate: [authGuard, routeExistsGuard],
+    children: [
+      {
+        path: 'dashboard',
+        loadChildren: () =>
+          import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
+      },
+      {
+        path: 'analytics',
+        loadChildren: () =>
+          import('./features/analytics/analytics.routes').then((m) => m.ANALYTICS_ROUTES),
+      },
+      {
+        path: 'team',
+        loadChildren: () => import('./features/team/team.routes').then((m) => m.TEAM_ROUTES),
+      },
+      {
+        path: 'settings',
+        loadChildren: () =>
+          import('./features/settings/settings.routes').then((m) => m.SETTINGS_ROUTES),
+      },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+    ],
+  },
+  { path: '**', pathMatch: 'full', redirectTo: 'login' },
 ];

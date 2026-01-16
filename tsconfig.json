@@ -13,6 +13,7 @@
     "experimentalDecorators": true,
     "paths": {
       "sidebar-menu": [
+        "./projects/sidebar-menu/src/public-api.ts",
         "./dist/sidebar-menu"
       ]
     },

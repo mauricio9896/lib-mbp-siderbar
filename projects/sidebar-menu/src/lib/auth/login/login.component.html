@@ -1,0 +1,47 @@
+<section class="login-card" [class.is-loading]="loading()">
+  <header class="login-header">
+    <h2 class="login-title">{{ title() }}</h2>
+    @if (subtitle()) {
+      <p class="login-subtitle">{{ subtitle() }}</p>
+    }
+  </header>
+
+  @if (error()) {
+    <div class="login-error" role="alert" aria-live="polite">
+      {{ error() }}
+    </div>
+  }
+
+  <form class="login-form" (submit)="onSubmit($event)" novalidate>
+    <label class="login-label" for="login-username">Email</label>
+    <input
+      id="login-username"
+      class="login-input"
+      type="email"
+      autocomplete="username"
+      required
+      [value]="username()"
+      (input)="onUsernameInput($event)"
+    />
+
+    <label class="login-label" for="login-password">Password</label>
+    <input
+      id="login-password"
+      class="login-input"
+      type="password"
+      autocomplete="current-password"
+      required
+      [value]="password()"
+      (input)="onPasswordInput($event)"
+    />
+
+    <button class="login-submit" type="submit" [disabled]="!canSubmit()">
+      @if (loading()) {
+        <span class="login-spinner" aria-hidden="true"></span>
+      }
+      <span class="login-submit-text">
+        {{ loading() ? 'Signing in...' : 'Sign in' }}
+      </span>
+    </button>
+  </form>
+</section>
