@@ -6,12 +6,12 @@ Este documento describe **el contexto y el modelo de datos** para una arquitectu
 
 ## 🎯 Objetivo de la arquitectura
 
-* Un solo **frontend** (Angular) desplegado en S3 + CloudFront
-* Un solo **backend**
-* Múltiples **tenants (clientes)**
-* **Una base de datos por tenant**
-* Aislamiento fuerte de datos
-* Login compartido, pero **usuarios NO centralizados**
+- Un solo **frontend** (Angular) desplegado en S3 + CloudFront
+- Un solo **backend**
+- Múltiples **tenants (clientes)**
+- **Una base de datos por tenant**
+- Aislamiento fuerte de datos
+- Login compartido, pero **usuarios NO centralizados**
 
 Ejemplo de acceso:
 
@@ -40,52 +40,68 @@ El sistema se divide en **dos contextos claramente separados**:
 
 ### Responsabilidad
 
-* Resolver el tenant a partir del subdominio
-* Proveer la información de conexión a la base de datos del tenant
-* Mantener configuración mínima del tenant
+- Resolver el tenant a partir del subdominio
+- Proveer la información de conexión a la base de datos del tenant
+- Mantener configuración mínima del tenant
 
 ### Qué NO hace
 
-* No almacena usuarios
-* No almacena contraseñas
-* No maneja roles ni permisos
-* No contiene datos de negocio
+- No almacena usuarios
+- No almacena contraseñas
+- No maneja roles ni permisos
+- No contiene datos de negocio
 
 ---
 
 ## 📊 Diagrama de Clases – Base de Datos CENTRAL
 
 ```mermaid
-classDiagram
-direction TB
+erDiagram
 
-class Tenant {
-  +Long id
-  +String subdomain
-  +String name
-  +String dbHost
-  +Integer dbPort
-  +String dbName
-  +String dbUser
-  +String dbPassword
-  +String status
-  +Date createdAt
-}
+    TENANT {
+        BIGINT id PK
+        VARCHAR subdomain
+        VARCHAR name
+        VARCHAR status
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
 
-class TenantSetting {
-  +Long id
-  +String key
-  +String value
-}
+    TENANT_DATABASE {
+        BIGINT id PK
+        BIGINT tenant_id FK
+        VARCHAR host
+        INT port
+        VARCHAR db_name
+        VARCHAR username
+        VARCHAR password
+        TIMESTAMP created_at
+    }
 
-class TenantAudit {
-  +Long id
-  +String event
-  +Date createdAt
-}
+    TENANT_THEME {
+        BIGINT id PK
+        BIGINT tenant_id FK
+        VARCHAR name
+        BOOLEAN active
+        TIMESTAMP created_at
+    }
 
-Tenant "1" --> "0..*" TenantSetting : has
-Tenant "1" --> "0..*" TenantAudit : logs
+    TENANT_THEME_COLORS {
+        BIGINT id PK
+        BIGINT tenant_theme_id FK
+        VARCHAR bg
+        VARCHAR text
+        VARCHAR text_secondary
+        VARCHAR active_bg
+        VARCHAR active_text
+        VARCHAR hover_bg
+        VARCHAR border
+    }
+
+    TENANT ||--|| TENANT_DATABASE : has
+    TENANT ||--o{ TENANT_THEME : has
+    TENANT_THEME ||--|| TENANT_THEME_COLORS : defines
+
 ```
 
 ---
@@ -96,9 +112,9 @@ Cada tenant tiene **su propia base de datos**, con el mismo esquema.
 
 ### Responsabilidad
 
-* Autenticación de usuarios
-* Autorización (roles y permisos)
-* Gestión de datos de negocio
+- Autenticación de usuarios
+- Autorización (roles y permisos)
+- Gestión de datos de negocio
 
 ---
 
@@ -178,11 +194,11 @@ Permission "1" --> "0..*" RolePermission
 
 ## 🧠 Beneficios del diseño
 
-* Aislamiento real de datos
-* Alta seguridad
-* Escalabilidad horizontal
-* Fácil cumplimiento regulatorio
-* Un solo frontend y backend
+- Aislamiento real de datos
+- Alta seguridad
+- Escalabilidad horizontal
+- Fácil cumplimiento regulatorio
+- Un solo frontend y backend
 
 ---
 
@@ -192,9 +208,6 @@ Este diseño permite construir un **SaaS multi-tenant profesional**, seguro y es
 
 > **Central DB = resolver a dónde conectarse**
 > **Tenant DB = mundo real del negocio**
-
-
-
 
 ```mermaid
 sequenceDiagram
