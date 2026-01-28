@@ -254,3 +254,6 @@ sequenceDiagram
     API -->> FE: 200 OK (productos)
     FE -->> U: Mostrar productos
 ```
+
+
+Este archivo se corrigio 
