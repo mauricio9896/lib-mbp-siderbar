@@ -1,7 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { LoginRequest } from '../services/auth.service';
+import { LoginRequest } from '../models/auth.model';
+import { AuthLoginResponse, AuthService } from 'lib-mbp-solutions';
 
 @Component({
   selector: 'mbp-login',
@@ -14,32 +23,43 @@ import { LoginRequest } from '../services/auth.service';
   },
 })
 export class LoginComponent {
-  readonly title = input('Sign in');
-  readonly subtitle = input<string | null>(null);
-  readonly loading = input(false);
-  readonly error = input<string | null>(null);
+  public error = signal('');
+  public loading = signal(false);
 
-  readonly login = output<LoginRequest>();
-
-  readonly username = signal('');
+  readonly email = signal('');
   readonly password = signal('');
   readonly showPassword = signal(false);
 
+  private readonly authService = inject(AuthService);
+  readonly loginResponse = output<AuthLoginResponse>();
+
   readonly canSubmit = computed(() => {
-    return !this.loading() && this.username().trim().length > 0 && this.password().length > 0;
+    return this.email().trim().length > 0 && this.password().length > 0;
   });
 
   // Emit login request when the form is valid.
   onSubmit(event: Event): void {
     event.preventDefault();
     if (!this.canSubmit()) return;
-    this.login.emit({ username: this.username().trim(), password: this.password() });
+
+    const payload: LoginRequest = {
+      email: this.email().trim(),
+      password: this.password(),
+      tenant: 'mbp-solutions', // VA A QUEDAR QUEMANDO, MAS ADELANTE SE EVALUA LA LOGICA PARA OBTENER EL TENAT
+    };
+
+    this.loading.set(true);
+    this.authService.login(payload).subscribe({
+      next: (res) => this.loginResponse.emit(res),
+      error: (err) => this.error.set(err.message ?? 'Login failed'),
+      complete: () => this.loading.set(false),
+    });
   }
 
   // Keep username signal in sync with input.
-  onUsernameInput(event: Event): void {
+  onEmailInput(event: Event): void {
     const target = event.target as HTMLInputElement | null;
-    this.username.set(target?.value ?? '');
+    this.email.set(target?.value ?? '');
   }
 
   // Keep password signal in sync with input.

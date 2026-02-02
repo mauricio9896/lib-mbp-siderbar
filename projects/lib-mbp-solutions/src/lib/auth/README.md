@@ -66,7 +66,7 @@ export class LoginPageComponent {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
-  onLogin(payload: { username: string; password: string }): void {
+  onLogin(payload: { email: string; password: string; tenant?: string }): void {
     this.loading.set(true);
     this.error.set(null);
 
@@ -132,7 +132,7 @@ export const routes: Routes = [
 
 ## Endpoints esperados
 
-- `POST /api/login` -> `AuthLoginResponse`
+- `POST /auth/login` -> `AuthLoginResponse`
 - `POST /api/refresh` -> `AuthLoginResponse`
 
 ## Utilidades

@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { AuthLoginResponse, PermissionItem } from '../access.model';
+import { AuthLoginResponse, PermissionItem } from '../models/access.model';
 
 const STORAGE_KEY = 'app.auth.session';
 

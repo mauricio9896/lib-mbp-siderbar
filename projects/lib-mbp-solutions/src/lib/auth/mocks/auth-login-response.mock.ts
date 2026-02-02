@@ -1,4 +1,4 @@
-import { AuthLoginResponse } from '../access.model';
+import { AuthLoginResponse } from '../models/access.model';
 
 export const AUTH_LOGIN_RESPONSE_MOCK: AuthLoginResponse = {
   accessToken: 'jwt-access-token',

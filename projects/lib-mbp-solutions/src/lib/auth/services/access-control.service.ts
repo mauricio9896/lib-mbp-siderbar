@@ -1,5 +1,5 @@
 import { Injectable, computed, inject } from '@angular/core';
-import { Action, PermissionItem } from '../access.model';
+import { Action, PermissionItem } from '../models/access.model';
 import { AuthSessionService } from './auth-session.service';
 
 @Injectable({ providedIn: 'root' })
