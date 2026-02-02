@@ -4,18 +4,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map, of, tap, throwError } from 'rxjs';
 import { AuthLoginResponse } from '../models/access.model';
 import { AuthSessionService } from './auth-session.service';
-import {
-  BackendLoginResponse,
-  LoginRequest,
-  RefreshRequest,
-} from '../models/auth.model';
+import { BackendLoginResponse, LoginRequest, RefreshRequest } from '../models/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private session = inject(AuthSessionService);
   private document = inject(DOCUMENT);
-  private readonly urlBase = 'localhost:8080/auth';
+  private readonly urlBase = 'http://localhost:8080/auth';
 
   login(payload: LoginRequest): Observable<AuthLoginResponse> {
     return this.http

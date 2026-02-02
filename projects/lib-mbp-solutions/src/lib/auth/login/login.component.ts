@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { LoginRequest } from '../models/auth.model';
 import { AuthLoginResponse, AuthService } from 'lib-mbp-solutions';
 import { finalize, map } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'mbp-login',
@@ -55,7 +56,7 @@ export class LoginComponent {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (res) => this.loginResponse.emit(res),
-        error: (err) => this.error.set(err.message ?? 'Login failed'),
+        error: (err: HttpErrorResponse) => this.error.set(err.error?.message ?? 'Login failed'),
       });
   }
 
