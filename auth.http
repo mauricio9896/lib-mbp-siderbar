@@ -1,0 +1,9 @@
+### Auth login
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "tenant": "empresa1",
+  "email": "user@empresa1.com",
+  "password": "mi_clave"
+}
