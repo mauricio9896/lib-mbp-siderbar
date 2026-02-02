@@ -11,6 +11,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { LoginRequest } from '../models/auth.model';
 import { AuthLoginResponse, AuthService } from 'lib-mbp-solutions';
+import { finalize, map } from 'rxjs';
 
 @Component({
   selector: 'mbp-login',
@@ -49,11 +50,13 @@ export class LoginComponent {
     };
 
     this.loading.set(true);
-    this.authService.login(payload).subscribe({
-      next: (res) => this.loginResponse.emit(res),
-      error: (err) => this.error.set(err.message ?? 'Login failed'),
-      complete: () => this.loading.set(false),
-    });
+    this.authService
+      .login(payload)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (res) => this.loginResponse.emit(res),
+        error: (err) => this.error.set(err.message ?? 'Login failed'),
+      });
   }
 
   // Keep username signal in sync with input.
